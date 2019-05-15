@@ -78,6 +78,10 @@ dependencies {
     implementation "org.slf4j:slf4j-api:$slf4jApiVersion"
     // Logback Classic
     implementation "ch.qos.logback:logback-classic:$logbackVersion"
+
+    // https://mvnrepository.com/artifact/org.rxtx/rxtx
+    compile group: 'org.rxtx', name: 'rxtx', version: '2.1.7'
+
 }
 
 defaultTasks 'clean', 'build', 'javadoc', 'scaladoc', 'shadowJar'
