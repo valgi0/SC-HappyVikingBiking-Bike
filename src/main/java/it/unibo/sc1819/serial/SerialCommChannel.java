@@ -11,8 +11,6 @@ import java.util.concurrent.*;
 
 /**
  * Comm channel implementation based on serial port.
- * 
- * @author aricci
  *
  */
 public class SerialCommChannel implements CommChannel, SerialPortEventListener {
@@ -27,7 +25,7 @@ public class SerialCommChannel implements CommChannel, SerialPortEventListener {
 
         CommPortIdentifier portId = CommPortIdentifier.getPortIdentifier(port);
         // open serial port, and use class name for the appName.
-        SerialPort serialPort = (SerialPort) portId.open(this.getClass().getName(), 2000);
+        serialPort = (SerialPort) portId.open(this.getClass().getName(), 2000);
 
         // set port parameters
         serialPort.setSerialPortParams(rate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
@@ -96,4 +94,9 @@ public class SerialCommChannel implements CommChannel, SerialPortEventListener {
         // Ignore all the other eventTypes, but you should consider the other ones.
     }
 
+    @Override
+    public void addListener(SerialPortEventListener listener) throws Exception {
+        serialPort.removeEventListener();
+        serialPort.addEventListener(listener);
+    }
 }

@@ -1,5 +1,7 @@
 package it.unibo.sc1819.serial;
 
+import gnu.io.SerialPortEventListener;
+
 /**
  * Simple interface for an async msg communication channel
  * 
@@ -30,5 +32,10 @@ public interface CommChannel {
      * @return
      */
     boolean isMsgAvailable();
+
+    /**
+     * Add a listener to the Channel.
+     */
+    void addListener(final SerialPortEventListener listener) throws Exception ;
 
 }
