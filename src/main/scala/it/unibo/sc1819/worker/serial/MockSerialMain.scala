@@ -1,16 +1,15 @@
 package it.unibo.sc1819.worker.serial
 
-import gnu.io.{SerialPortEvent, SerialPortEventListener}
 
 object MockSerialMain extends App {
 
+  val defaultSerialPort = "ttyACM0"
+  val serialBauldRate = 9600
 
-}
+  SerialChannel(defaultSerialPort, serialBauldRate, SerialListener())
 
-class MockSerialListener extends SerialPortEventListener {
-  override def serialEvent(serialPortEvent: SerialPortEvent): Unit = {
-    if(serialPortEvent.getEventType == SerialPortEvent.DATA_AVAILABLE) {
-      println()
-    }
+  while(true) {
+
   }
+
 }

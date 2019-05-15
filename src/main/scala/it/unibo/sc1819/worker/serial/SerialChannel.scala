@@ -41,6 +41,9 @@ trait SerialChannel {
 
 object SerialChannel {
 
+  def apply(serialPortPath:String, rate:Int, listener: SerialListener): SerialChannel =
+    new SerialChannelImpl(serialPortPath, rate, listener)
+
   private class SerialChannelImpl(override val serialPortPath:String,
                                   override val rate:Int, listener: SerialListener) extends SerialChannel with SerialPortEventListener {
     val portID = CommPortIdentifier.getPortIdentifier(serialPortPath)
