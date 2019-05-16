@@ -41,8 +41,10 @@ private:
       threshold = threshold + offset;
       digitalWrite(pinLed, HIGH);
     }
+    /*
     Serial.print("Threshold: ");
     Serial.println(threshold);
+    */
     state = _state;
   };
 };
