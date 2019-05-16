@@ -2,7 +2,10 @@
 #include <Arduino.h>
 
 
-void Task::tick(){
+void Task::tick(int * state){
   Serial.begin(9600);
-  Serial.write("Test");
+  Serial.write("Test: ");
+  for(int i = 0; i < 20; i ++){
+
+  }
 }

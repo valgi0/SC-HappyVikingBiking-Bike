@@ -3,17 +3,7 @@
 #include "Task.h"
 #include "LightSensorTask.h"
 #include "debugTask.h"
-
-
-//state cells definietion
-#define SCHEDULER_PERIOD 0
-#define LIGHTSENSOR_PERIOD 1
-#define LED_LIGHT 2
-#define SENSOR_LIGHT 3
-#define THRESHOLD 4
-#define SERIAL_TASK_PERIOD 5
-
-
+#include "mylib.h"
 
 // default value for all system
 const int def_led_light = 13;
@@ -24,7 +14,7 @@ const int def_serial_period = 2000;
 const Scheduler scheduler;
 
 //state
-int internalState[20];
+int internalState[20] = {'\0'};
 
 
 
@@ -46,7 +36,7 @@ void setup() {
   pinMode(internalState[LED_LIGHT], OUTPUT);
 
   // initial set up for scheduler
-  scheduler.init(internalState[SCHEDULER_PERIOD]);
+  scheduler.init(internalState[SCHEDULER_PERIOD], internalState);
 
   // tasks generation
   Task* t1 = new debugTask("I'am a task", 1);

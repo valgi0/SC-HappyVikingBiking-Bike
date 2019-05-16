@@ -28,7 +28,7 @@ class LightSensorTask : public Task {
 public:
   LightSensorTask(const int _led, const int _sensor, const int _thresh);
   void init(int period);
-  void tick();
+  void tick(int *state);
 
 private:
 
@@ -41,6 +41,8 @@ private:
       threshold = threshold + offset;
       digitalWrite(pinLed, HIGH);
     }
+    Serial.print("Threshold: ");
+    Serial.println(threshold);
     state = _state;
   };
 };

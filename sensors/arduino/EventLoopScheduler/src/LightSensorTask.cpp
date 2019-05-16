@@ -1,5 +1,6 @@
 #include "LightSensorTask.h"
 #include<Arduino.h>
+#include "mylib.h"
 
 LightSensorTask::LightSensorTask(
    const int _led,
@@ -29,14 +30,15 @@ void LightSensorTask::init(int period){
   Task::init(period);
 };
 
-void LightSensorTask::tick(){
+void LightSensorTask::tick(int *state){
   int light = analogRead(this -> pinSensor);
+  state[RESULT_LIGHT] = light;
   /*
   Serial.println("---- TICK Light Sensor -----");
   Serial.print("Light read: " ); Serial.println(light);
   */
   if((light >= this -> threshold && this -> state == OFFLED)
-  || (light < this -> threshold && state == ONLED)){
+  || (light < this -> threshold && this -> state == ONLED)){
     // everything fine. No need to change state
     return;
   }else{
