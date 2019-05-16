@@ -79,8 +79,12 @@ dependencies {
     // Logback Classic
     implementation "ch.qos.logback:logback-classic:$logbackVersion"
 
-    // https://mvnrepository.com/artifact/org.rxtx/rxtx
-    compile group: 'org.rxtx', name: 'rxtx', version: '2.1.7'
+    // https://mvnrepository.com/artifact/org.bidib.jbidib.org.qbang.rxtx/rxtxcomm
+    compile group: 'org.bidib.jbidib.org.qbang.rxtx', name: 'rxtxcomm', version: '2.2'
+
+
+
+
 
 }
 

@@ -46,6 +46,7 @@ object SerialChannel {
 
   private class SerialChannelImpl(override val serialPortPath:String,
                                   override val rate:Int, listener: SerialListener) extends SerialChannel with SerialPortEventListener {
+    println(CommPortIdentifier.getPortIdentifiers.hasMoreElements)
     val portID = CommPortIdentifier.getPortIdentifier(serialPortPath)
     val serialPort: SerialPort = portID.open(this.getClass.getName, 2000).asInstanceOf[SerialPort]
     serialPort.setSerialPortParams(rate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE)
@@ -71,6 +72,7 @@ object SerialChannel {
 
     override def serialEvent(serialPortEvent: SerialPortEvent): Unit = {
       if (serialPortEvent.getEventType == SerialPortEvent.DATA_AVAILABLE) try {
+        println("Data available")
         listener.onMessageReceived(input.readLine)
       } catch {
         case e: Exception =>
