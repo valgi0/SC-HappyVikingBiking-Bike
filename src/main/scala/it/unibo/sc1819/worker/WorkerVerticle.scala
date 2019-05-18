@@ -3,6 +3,7 @@ package it.unibo.sc1819.worker
 import io.vertx.lang.scala.ScalaVerticle
 import io.vertx.scala.core.Vertx
 import it.unibo.sc1819.util.messages.Topic
+import it.unibo.sc1819.worker.serial.messages.SerialMessage
 import it.unibo.sc1819.worker.serial.{SerialChannel, SerialListener}
 
 /**
@@ -52,43 +53,58 @@ object WorkerVerticle {
 
     val eventBus = vertxContext.eventBus
     var serialChannel:SerialChannel = _
+    setup()
+
     /**
       * Method to be called when the bike is locked.
       */
-    override def onBikeLock(): Unit = ???
+    override def onBikeLock(): Unit = sendMessageOnChannel(Topic.LOCK_TOPIC_WEB)
 
     /**
       * Method to be call when the bike is unlocked.
       */
-    override def onBikeUnlock(): Unit = ???
+    override def onBikeUnlock(): Unit = sendMessageOnChannel(Topic.UNLOCK_TOPIC_WEB)
 
     /**
       * Callback for setting a configuration
       *
       * @param configuration a string containing the configuration to be sent to the low level components
       */
-    override def onConfigurationRetreived(configuration: String): Unit = ???
+    override def onConfigurationRetreived(configuration: String): Unit =
+      serialChannel.sendMessage(SerialMessage(configuration).toSerializedMessage)
 
     /**
       * CallBack to be called when a GPS message is notified.
       *
       * @param gpsString the string containing the GPS information
       */
-    override def onGPSMessage(gpsString: String): Unit = ???
+    override def onGPSMessage(gpsString: String): Unit = {
+      val fancyGPMessage = gpsString
+      //TODO PARSE MESSAGE INTO SOMETHING NICE
+      sendMessageOnChannel(Topic.GPS_TOPIC_WEB, fancyGPMessage)
+    }
 
     /**
       * CallBack to be called when a AQ message is notified.
       *
       * @param aqString the string containing the AQ information
       */
-    override def onAQMessage(aqString: String): Unit = ???
+    override def onAQMessage(aqString: String): Unit = {
+      val fancyAQMessage = aqString
+      //TODO Parse message
+      sendMessageOnChannel(Topic.AQ_TOPIC_WEB, fancyAQMessage)
+    }
 
     /**
       * CallBack to be called when a collision message is notified.
       *
       * @param collisionString the string containing the collision information
       */
-    override def onCollisionMessage(collisionString: String): Unit = ???
+    override def onCollisionMessage(collisionString: String): Unit = {
+      val fancyCollisionString = collisionString
+      //TODO Parse message
+      sendMessageOnChannel(Topic.AQ_TOPIC_WEB, fancyCollisionString)
+    }
 
     private def setup(): Unit = {
       serialChannel = SerialChannel(serialPort, rate, SerialListener(vertxContext))
@@ -116,6 +132,11 @@ object WorkerVerticle {
         messageHandler
       })
     }
+    private def sendMessageOnChannel(topic:String, message:String = ""): Unit = {
+      eventBus.publish(topic, message)
+    }
+
   }
+
 
 }
