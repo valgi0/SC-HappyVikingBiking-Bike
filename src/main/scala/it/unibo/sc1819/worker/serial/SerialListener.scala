@@ -45,7 +45,9 @@ object SerialListener {
       }
     }
 
-    private def writeOnGPSChannel(message:String):Unit = eventBus.publish(Topic.GPS_TOPIC_WORKER, message)
+    private def writeOnGPSChannel(message:String):Unit =
+      eventBus.publish(Topic.GPS_TOPIC_WORKER, message)
+
 
     private def writeOnAPChannel(message:String):Unit = eventBus.publish(Topic.AQ_TOPIC_WORKER, message)
 

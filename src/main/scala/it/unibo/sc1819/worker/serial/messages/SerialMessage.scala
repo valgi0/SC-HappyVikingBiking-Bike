@@ -34,8 +34,15 @@ object SerialMessage {
   val EMPTY_VALUE = ""
 
   def apply(message:String): SerialMessage = {
-    if(message.contains(SEPARATOR)) messageFactory(parseSerializedString(message))
-    else SetupSerialMessage(value = message)
+    if(message.contains(SEPARATOR)) {
+      println("Messaggio ha sintassi corretta")
+      messageFactory(parseSerializedString(message))
+    }
+    else {
+      println("Ricevuto messaggio anomalo: " + message)
+      SetupSerialMessage(value = message)
+    }
+
   }
 
 

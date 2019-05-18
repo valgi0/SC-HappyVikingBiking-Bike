@@ -1,7 +1,7 @@
 package it.unibo.sc1819.worker
 
 import io.vertx.scala.core.Vertx
-import it.unibo.sc1819.worker.serial.{SerialChannel, SerialListener}
+import it.unibo.sc1819.util.messages.Topic
 
 object MockWorkerMain extends App {
 
@@ -13,5 +13,11 @@ object MockWorkerMain extends App {
   val workerVerticle = WorkerVerticle(defaultSerialPort, serialBauldRate, vertx)
 
   vertx.deployVerticle(workerVerticle)
+
+ /* while (true) {
+    Thread.sleep(10000)
+      vertx.eventBus.publish(Topic.SETUP_TOPIC_WORKER,"MOCK_CONFIGURATION")
+
+  }*/
 
 }

@@ -79,8 +79,11 @@ object WorkerVerticle {
       *
       * @param configuration a string containing the configuration to be sent to the low level components
       */
-    override def onConfigurationRetreived(configuration: String): Unit =
-      serialChannel.sendMessage(SerialMessage(configuration).toSerializedMessage)
+    override def onConfigurationRetreived(configuration: String): Unit = {
+      println("Configurazione ritornata " + configuration)
+      //serialChannel.sendMessage(SerialMessage(configuration).toSerializedMessage)
+    }
+
 
     /**
       * CallBack to be called when a GPS message is notified.
@@ -91,7 +94,7 @@ object WorkerVerticle {
       val fancyGPMessage = gpsString
       //TODO PARSE MESSAGE INTO SOMETHING NICE
       println("GPS message ricevuto: " + gpsString)
-      sendMessageOnChannel(Topic.GPS_TOPIC_WEB, fancyGPMessage)
+      //sendMessageOnChannel(Topic.GPS_TOPIC_WEB, fancyGPMessage)
     }
 
     /**
@@ -119,13 +122,23 @@ object WorkerVerticle {
     }
 
     private def setup(): Unit = {
-      serialChannel = SerialChannel(serialPort, rate, SerialListener(vertxContext))
-      listenForMessages(Topic.GPS_TOPIC_WORKER, onGPSMessage)
+
+      /*listenForMessages(Topic.GPS_TOPIC_WORKER, onGPSMessage)
       listenForMessages(Topic.AQ_TOPIC_WORKER, onAQMessage)
       listenForMessages(Topic.COLLISION_TOPIC_WORKER, onCollisionMessage)
       listenForMessagesNoBody(Topic.LOCK_TOPIC_WORKER, onBikeLock)
       listenForMessagesNoBody(Topic.UNLOCK_TOPIC_WORKER, onBikeUnlock)
-      listenForMessages(Topic.SETUP_TOPIC_WORKER, onConfigurationRetreived)
+      listenForMessages(Topic.SETUP_TOPIC_WORKER, onConfigurationRetreived)*/
+      eventBus.consumer[String](Topic.SETUP_TOPIC_WORKER)
+        .handler(message => onConfigurationRetreived(message.body()))
+          .completionHandler( _ => {
+            println("Worker sviluppato")
+      eventBus.consumer[String](Topic.GPS_TOPIC_WORKER).handler(message => {
+        onGPSMessage(message.body())
+      }).completionHandler(_ => {
+        println("GPS propagato")
+        serialChannel = SerialChannel(serialPort, rate, SerialListener(vertxContext))
+      })})
     }
 
     /**
