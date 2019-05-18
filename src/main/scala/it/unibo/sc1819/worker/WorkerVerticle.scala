@@ -49,6 +49,9 @@ trait WorkerVerticle extends ScalaVerticle {
 
 object WorkerVerticle {
 
+  def apply(serialPort:String, rate:Int, vertx: Vertx): WorkerVerticle =
+    new WorkerVerticleImpl(rate, serialPort, vertx)
+
   private class WorkerVerticleImpl(val rate:Int, serialPort:String, vertxContext:Vertx) extends WorkerVerticle {
 
     val eventBus = vertxContext.eventBus
