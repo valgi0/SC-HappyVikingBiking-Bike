@@ -1,6 +1,9 @@
 package it.unibo.sc1819.worker
 
 import io.vertx.lang.scala.ScalaVerticle
+import io.vertx.scala.core.Vertx
+import it.unibo.sc1819.util.messages.Topic
+import it.unibo.sc1819.worker.serial.{SerialChannel, SerialListener}
 
 /**
   * This trait will define the behaviour of the low level verticle inside each bike.
@@ -41,4 +44,78 @@ trait WorkerVerticle extends ScalaVerticle {
     * @param collisionString the string containing the collision information
     */
   def onCollisionMessage(collisionString:String)
+}
+
+object WorkerVerticle {
+
+  private class WorkerVerticleImpl(val rate:Int, serialPort:String, vertxContext:Vertx) extends WorkerVerticle {
+
+    val eventBus = vertxContext.eventBus
+    var serialChannel:SerialChannel = _
+    /**
+      * Method to be called when the bike is locked.
+      */
+    override def onBikeLock(): Unit = ???
+
+    /**
+      * Method to be call when the bike is unlocked.
+      */
+    override def onBikeUnlock(): Unit = ???
+
+    /**
+      * Callback for setting a configuration
+      *
+      * @param configuration a string containing the configuration to be sent to the low level components
+      */
+    override def onConfigurationRetreived(configuration: String): Unit = ???
+
+    /**
+      * CallBack to be called when a GPS message is notified.
+      *
+      * @param gpsString the string containing the GPS information
+      */
+    override def onGPSMessage(gpsString: String): Unit = ???
+
+    /**
+      * CallBack to be called when a AQ message is notified.
+      *
+      * @param aqString the string containing the AQ information
+      */
+    override def onAQMessage(aqString: String): Unit = ???
+
+    /**
+      * CallBack to be called when a collision message is notified.
+      *
+      * @param collisionString the string containing the collision information
+      */
+    override def onCollisionMessage(collisionString: String): Unit = ???
+
+    private def setup(): Unit = {
+      serialChannel = SerialChannel(serialPort, rate, SerialListener(vertxContext))
+      listenForMessages(Topic.GPS_TOPIC_WORKER, onGPSMessage)
+      listenForMessages(Topic.AQ_TOPIC_WORKER, onAQMessage)
+      listenForMessages(Topic.COLLISION_TOPIC_WORKER, onCollisionMessage)
+      listenForMessagesNoBody(Topic.LOCK_TOPIC_WORKER, onBikeLock)
+      listenForMessagesNoBody(Topic.UNLOCK_TOPIC_WORKER, onBikeUnlock)
+      listenForMessages(Topic.SETUP_TOPIC_WORKER, onConfigurationRetreived)
+    }
+
+    /**
+      * Define a listener method to make possible listening on every channel
+      * @param topic the topic on which the listener will listen
+      * @param messageHandler the handler to call when a message is received.
+      */
+    private def listenForMessages(topic:String, messageHandler:String => Unit ):Unit = {
+      eventBus.consumer[String](topic).handler(message => {
+        messageHandler(message.body())
+      })
+    }
+
+    private def listenForMessagesNoBody(topic:String, messageHandler:  => Unit ):Unit = {
+      eventBus.consumer[String](topic).handler(_ => {
+        messageHandler
+      })
+    }
+  }
+
 }
