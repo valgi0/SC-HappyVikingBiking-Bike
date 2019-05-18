@@ -56,22 +56,22 @@ object SerialMessage {
   }
 
 
-  private case class GPSSerialMessage(override val key:String = GPS_MESSAGE_KEY,
+   case class GPSSerialMessage(override val key:String = GPS_MESSAGE_KEY,
                                       override val value:String = EMPTY_VALUE) extends SerialMessage
 
-  private case class AQSerialMessage(override val key:String = AQ_MESSAGE_KEY,
+   case class AQSerialMessage(override val key:String = AQ_MESSAGE_KEY,
                                       override val value:String = EMPTY_VALUE) extends SerialMessage
 
-  private case class CollisionSerialMessage(override val key:String = COLLISION_MESSAGE_KEY,
+   case class CollisionSerialMessage(override val key:String = COLLISION_MESSAGE_KEY,
                                       override val value:String = EMPTY_VALUE) extends SerialMessage
 
-  private case class LockSerialMessage(override val key:String = LOCK_MESSAGE_KEY,
+   case class LockSerialMessage(override val key:String = LOCK_MESSAGE_KEY,
                                       override val value:String = EMPTY_VALUE) extends SerialMessage
 
-  private case class UnlockSerialMessage(override val key:String = UNLOCK_MESSAGE_KEY,
+   case class UnlockSerialMessage(override val key:String = UNLOCK_MESSAGE_KEY,
                                       override val value:String = EMPTY_VALUE) extends SerialMessage
 
-  private case class SetupSerialMessage(override val key:String = SETUP_MESSAGE_KEY,
+   case class SetupSerialMessage(override val key:String = SETUP_MESSAGE_KEY,
                                       override val value:String = EMPTY_VALUE) extends SerialMessage
 
 
