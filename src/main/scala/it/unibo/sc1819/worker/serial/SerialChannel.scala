@@ -56,7 +56,7 @@ object SerialChannel {
     var tempMessage:String = ""
 
 
-    override def sendMessage(message: String): Unit = tempMessage = message
+    override def sendMessage(message: String): Unit = sendAsyncMessage(message)
 
 
     override def serialEvent(serialPortEvent: SerialPortEvent): Unit = {
@@ -87,7 +87,7 @@ object SerialChannel {
     private def sendAsyncMessage(message: String): Unit = {
       val array = message.toCharArray
       val bytes = new Array[Byte](array.length)
-      for(i <- 0 to array.length) {
+      for(i <- 0 until array.length) {
         bytes(i) = array(i).toByte
       }
       try {

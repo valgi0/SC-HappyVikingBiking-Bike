@@ -81,7 +81,7 @@ object WorkerVerticle {
       */
     override def onConfigurationRetreived(configuration: String): Unit = {
       println("Configurazione ritornata " + configuration)
-      //serialChannel.sendMessage(SerialMessage(configuration).toSerializedMessage)
+      serialChannel.sendMessage(SerialMessage(configuration).toSerializedMessage)
     }
 
 

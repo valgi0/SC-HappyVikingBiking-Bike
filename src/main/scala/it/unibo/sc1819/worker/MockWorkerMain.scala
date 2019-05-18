@@ -14,10 +14,10 @@ object MockWorkerMain extends App {
 
   vertx.deployVerticle(workerVerticle)
 
- /* while (true) {
-    Thread.sleep(10000)
-      vertx.eventBus.publish(Topic.SETUP_TOPIC_WORKER,"MOCK_CONFIGURATION")
+  while (true) {
 
-  }*/
+      vertx.eventBus.publish(Topic.SETUP_TOPIC_WORKER,"MOCK_CONFIGURATION")
+    Thread.sleep(10000)
+  }
 
 }
