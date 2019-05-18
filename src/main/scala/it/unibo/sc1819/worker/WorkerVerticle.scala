@@ -61,12 +61,18 @@ object WorkerVerticle {
     /**
       * Method to be called when the bike is locked.
       */
-    override def onBikeLock(): Unit = sendMessageOnChannel(Topic.LOCK_TOPIC_WEB)
+    override def onBikeLock(): Unit = {
+      println("Bici bloccata")
+      sendMessageOnChannel(Topic.LOCK_TOPIC_WEB)
+    }
 
     /**
       * Method to be call when the bike is unlocked.
       */
-    override def onBikeUnlock(): Unit = sendMessageOnChannel(Topic.UNLOCK_TOPIC_WEB)
+    override def onBikeUnlock(): Unit =  {
+      println("Bici Sbloccata")
+      sendMessageOnChannel(Topic.UNLOCK_TOPIC_WEB)
+    }
 
     /**
       * Callback for setting a configuration
@@ -84,6 +90,7 @@ object WorkerVerticle {
     override def onGPSMessage(gpsString: String): Unit = {
       val fancyGPMessage = gpsString
       //TODO PARSE MESSAGE INTO SOMETHING NICE
+      println("GPS message ricevuto: " + gpsString)
       sendMessageOnChannel(Topic.GPS_TOPIC_WEB, fancyGPMessage)
     }
 
@@ -95,6 +102,7 @@ object WorkerVerticle {
     override def onAQMessage(aqString: String): Unit = {
       val fancyAQMessage = aqString
       //TODO Parse message
+      println("AQ message ricevuto: " + aqString)
       sendMessageOnChannel(Topic.AQ_TOPIC_WEB, fancyAQMessage)
     }
 
@@ -106,6 +114,7 @@ object WorkerVerticle {
     override def onCollisionMessage(collisionString: String): Unit = {
       val fancyCollisionString = collisionString
       //TODO Parse message
+      println("Collision message ricevuto: " + collisionString)
       sendMessageOnChannel(Topic.AQ_TOPIC_WEB, fancyCollisionString)
     }
 
