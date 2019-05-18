@@ -19,5 +19,5 @@ object Topic {
   val UNLOCK_TOPIC_WORKER = "unlock_worker"
   val UNLOCK_TOPIC_WEB = "unlock_web"
 
-  val SETUP_TOPIC_WORKER = "gps_worker"
+  val SETUP_TOPIC_WORKER = "setup_worker"
 }

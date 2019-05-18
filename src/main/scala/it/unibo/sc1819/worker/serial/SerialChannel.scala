@@ -46,7 +46,6 @@ object SerialChannel {
 
   private class SerialChannelImpl(override val serialPortPath:String,
                                   override val rate:Int, listener: SerialListener) extends SerialChannel with SerialPortEventListener {
-    println(CommPortIdentifier.getPortIdentifiers.hasMoreElements)
     val portID = CommPortIdentifier.getPortIdentifier(serialPortPath)
     val serialPort: SerialPort = portID.open(this.getClass.getName, 2000).asInstanceOf[SerialPort]
     serialPort.setSerialPortParams(rate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE)
@@ -54,14 +53,14 @@ object SerialChannel {
     val output = serialPort.getOutputStream
     serialPort.addEventListener(this)
     serialPort.notifyOnDataAvailable(true)
-    serialPort.notifyOnOutputEmpty(true)
-    var tempMessage:String = _
+    var tempMessage:String = ""
 
 
     override def sendMessage(message: String): Unit = tempMessage = message
 
 
     override def serialEvent(serialPortEvent: SerialPortEvent): Unit = {
+      println("Evento arrivato")
       if (serialPortEvent.getEventType == SerialPortEvent.DATA_AVAILABLE) try {
         println("Data available")
         listener.onMessageReceived(input.readLine)
@@ -70,10 +69,10 @@ object SerialChannel {
           System.err.println(e.toString)
       }
       if(serialPortEvent.getEventType == SerialPortEvent.OUTPUT_BUFFER_EMPTY) {
-        if(tempMessage != null) {
+        if(tempMessage != "") {
           println("Sto inviando il messaggio")
           sendAsyncMessage(tempMessage)
-          tempMessage = _
+          tempMessage = ""
         }
       }
     }
