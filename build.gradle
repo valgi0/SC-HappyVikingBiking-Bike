@@ -11,7 +11,7 @@ version '0.1.0'
 sourceCompatibility = 1.8
 
 //Main class name
-mainClassName = 'it.unibo.sc1819.main.MockScalaMain'
+mainClassName = 'it.unibo.sc1819.worker.serial.MockSerialMain'
 
 //List of variables used in the file.
 ext {
@@ -78,6 +78,14 @@ dependencies {
     implementation "org.slf4j:slf4j-api:$slf4jApiVersion"
     // Logback Classic
     implementation "ch.qos.logback:logback-classic:$logbackVersion"
+
+    // https://mvnrepository.com/artifact/org.bidib.jbidib.org.qbang.rxtx/rxtxcomm
+    compile group: 'org.bidib.jbidib.org.qbang.rxtx', name: 'rxtxcomm', version: '2.2'
+
+
+
+
+
 }
 
 defaultTasks 'clean', 'build', 'javadoc', 'scaladoc', 'shadowJar'
