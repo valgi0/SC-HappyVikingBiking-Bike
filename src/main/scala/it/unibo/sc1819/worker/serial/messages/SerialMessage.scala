@@ -35,9 +35,11 @@ object SerialMessage {
 
   def apply(message:String): SerialMessage = {
     if(message.contains(SEPARATOR)) {
-      messageFactory(parseSerializedString(message))
+       messageFactory(parseSerializedString(message))
     }
-    throw new MalformedMessageException()
+    else {
+      SetupSerialMessage(message)
+    }
   }
 
 
@@ -52,7 +54,7 @@ object SerialMessage {
     case (key:String, stringValue:String) if key equals  COLLISION_MESSAGE_KEY => CollisionSerialMessage(value = stringValue)
     case (key:String, stringValue:String) if key equals  LOCK_MESSAGE_KEY => LockSerialMessage(value = stringValue)
     case (key:String, stringValue:String) if key equals  UNLOCK_MESSAGE_KEY => UnlockSerialMessage(value = stringValue)
-    case _ => throw new MalformedMessageException()
+    case _ => println(deserializedMessage); throw new MalformedMessageException()
   }
 
   /**

@@ -122,14 +122,18 @@ object WorkerVerticle {
     }
 
     private def setup(): Unit = {
-
-      serialChannel = SerialChannel(serialPort, rate, SerialListener(vertxContext))
       listenForMessages(Topic.GPS_TOPIC_WORKER, onGPSMessage)
-      listenForMessages(Topic.AQ_TOPIC_WORKER, onAQMessage)
-      listenForMessages(Topic.COLLISION_TOPIC_WORKER, onCollisionMessage)
-      listenForMessagesNoBody(Topic.LOCK_TOPIC_WORKER, onBikeLock)
-      listenForMessagesNoBody(Topic.UNLOCK_TOPIC_WORKER, onBikeUnlock)
-      listenForMessages(Topic.SETUP_TOPIC_WORKER, onConfigurationRetreived)
+        .completionHandler(_ =>
+          listenForMessagesNoBody(Topic.LOCK_TOPIC_WORKER, onBikeLock)
+            .completionHandler(_ => {
+              listenForMessages(Topic.AQ_TOPIC_WORKER, onAQMessage)
+              listenForMessages(Topic.COLLISION_TOPIC_WORKER, onCollisionMessage)
+              listenForMessagesNoBody(Topic.UNLOCK_TOPIC_WORKER, onBikeUnlock)
+              listenForMessages(Topic.SETUP_TOPIC_WORKER, onConfigurationRetreived)
+              serialChannel = SerialChannel(serialPort, rate, SerialListener(vertxContext))
+            }
+            ))
+
      /* eventBus.consumer[String](Topic.SETUP_TOPIC_WORKER)
         .handler(message => onConfigurationRetreived(message.body()))
           .completionHandler( _ => {
@@ -147,13 +151,13 @@ object WorkerVerticle {
       * @param topic the topic on which the listener will listen
       * @param messageHandler the handler to call when a message is received.
       */
-    private def listenForMessages(topic:String, messageHandler:String => Unit ):Unit = {
+    private def listenForMessages(topic:String, messageHandler:String => Unit ) = {
       eventBus.consumer[String](topic).handler(message => {
         messageHandler(message.body())
       })
     }
 
-    private def listenForMessagesNoBody(topic:String, messageHandler:  => Unit ):Unit = {
+    private def listenForMessagesNoBody(topic:String, messageHandler:  => Unit ) = {
       eventBus.consumer[String](topic).handler(_ => {
         messageHandler
       })
