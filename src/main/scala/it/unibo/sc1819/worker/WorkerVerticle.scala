@@ -132,17 +132,6 @@ object WorkerVerticle {
               serialChannel = SerialChannel(serialPort, rate, SerialListener(vertxContext))
             })
             ))
-
-     /* eventBus.consumer[String](Topic.SETUP_TOPIC_WORKER)
-        .handler(message => onConfigurationRetreived(message.body()))
-          .completionHandler( _ => {
-            println("Worker sviluppato")
-      eventBus.consumer[String](Topic.GPS_TOPIC_WORKER).handler(message => {
-        onGPSMessage(message.body())
-      }).completionHandler(_ => {
-        println("GPS propagato")
-
-      })})*/
     }
 
     /**
