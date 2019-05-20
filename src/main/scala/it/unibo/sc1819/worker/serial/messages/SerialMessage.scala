@@ -35,14 +35,9 @@ object SerialMessage {
 
   def apply(message:String): SerialMessage = {
     if(message.contains(SEPARATOR)) {
-      println("Messaggio ha sintassi corretta")
       messageFactory(parseSerializedString(message))
     }
-    else {
-      println("Ricevuto messaggio anomalo: " + message)
-      SetupSerialMessage(value = message)
-    }
-
+    throw new MalformedMessageException()
   }
 
 
@@ -57,10 +52,13 @@ object SerialMessage {
     case (key:String, stringValue:String) if key equals  COLLISION_MESSAGE_KEY => CollisionSerialMessage(value = stringValue)
     case (key:String, stringValue:String) if key equals  LOCK_MESSAGE_KEY => LockSerialMessage(value = stringValue)
     case (key:String, stringValue:String) if key equals  UNLOCK_MESSAGE_KEY => UnlockSerialMessage(value = stringValue)
-    case _ => throw new IllegalArgumentException
-
-
+    case _ => throw new MalformedMessageException()
   }
+
+  /**
+    * Exception to be raised when a malformed message is received
+    */
+  class MalformedMessageException() extends Exception
 
 
    case class GPSSerialMessage(override val key:String = GPS_MESSAGE_KEY,
@@ -81,6 +79,7 @@ object SerialMessage {
    case class SetupSerialMessage(override val key:String = SETUP_MESSAGE_KEY,
                                       override val value:String = EMPTY_VALUE) extends SerialMessage
 
-
-
 }
+
+
+
