@@ -22,6 +22,8 @@ object SerialListener {
 
   def apply(): SerialListener = new MockSerialListener()
 
+  def apply(context:Vertx): SerialListener = new SerialListenerImpl(context)
+
   private class MockSerialListener extends SerialListener {
 
     override def onMessageReceived(message: String): Unit = println(message)

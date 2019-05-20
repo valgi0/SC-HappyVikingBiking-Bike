@@ -46,7 +46,6 @@ object SerialChannel {
 
   private class SerialChannelImpl(override val serialPortPath:String,
                                   override val rate:Int, listener: SerialListener) extends SerialChannel with SerialPortEventListener {
-    println(CommPortIdentifier.getPortIdentifiers.hasMoreElements)
     val portID = CommPortIdentifier.getPortIdentifier(serialPortPath)
     val serialPort: SerialPort = portID.open(this.getClass.getName, 2000).asInstanceOf[SerialPort]
     serialPort.setSerialPortParams(rate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE)
@@ -54,11 +53,41 @@ object SerialChannel {
     val output = serialPort.getOutputStream
     serialPort.addEventListener(this)
     serialPort.notifyOnDataAvailable(true)
+    var tempMessage:String = ""
 
-    override def sendMessage(message: String): Unit = {
+
+    override def sendMessage(message: String): Unit = sendAsyncMessage(message)
+
+
+    override def serialEvent(serialPortEvent: SerialPortEvent): Unit = {
+      println("Evento arrivato")
+      if (serialPortEvent.getEventType == SerialPortEvent.DATA_AVAILABLE) try {
+        println("Data available")
+        listener.onMessageReceived(input.readLine)
+      } catch {
+        case e: Exception =>
+          System.err.println(e.toString)
+      }
+      if(serialPortEvent.getEventType == SerialPortEvent.OUTPUT_BUFFER_EMPTY) {
+        if(tempMessage != "") {
+          println("Sto inviando il messaggio")
+          sendAsyncMessage(tempMessage)
+          tempMessage = ""
+        }
+      }
+    }
+
+    override def closeSerial(): Unit = {
+      if (serialPort != null) {
+        serialPort.removeEventListener()
+        serialPort.close()
+      }
+    }
+
+    private def sendAsyncMessage(message: String): Unit = {
       val array = message.toCharArray
       val bytes = new Array[Byte](array.length)
-      for(i <- 0 to array.length) {
+      for(i <- 0 until array.length) {
         bytes(i) = array(i).toByte
       }
       try {
@@ -67,23 +96,6 @@ object SerialChannel {
       } catch {
         case ex: Exception =>
           ex.printStackTrace()
-      }
-    }
-
-    override def serialEvent(serialPortEvent: SerialPortEvent): Unit = {
-      if (serialPortEvent.getEventType == SerialPortEvent.DATA_AVAILABLE) try {
-        println("Data available")
-        listener.onMessageReceived(input.readLine)
-      } catch {
-        case e: Exception =>
-          System.err.println(e.toString)
-      }
-    }
-
-    override def closeSerial(): Unit = {
-      if (serialPort != null) {
-        serialPort.removeEventListener()
-        serialPort.close()
       }
     }
   }
