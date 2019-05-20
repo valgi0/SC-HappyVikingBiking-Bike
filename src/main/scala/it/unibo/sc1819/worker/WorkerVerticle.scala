@@ -94,7 +94,7 @@ object WorkerVerticle {
       val fancyGPMessage = gpsString
       //TODO PARSE MESSAGE INTO SOMETHING NICE
       println("GPS message ricevuto: " + gpsString)
-      //sendMessageOnChannel(Topic.GPS_TOPIC_WEB, fancyGPMessage)
+      sendMessageOnChannel(Topic.GPS_TOPIC_WEB, fancyGPMessage)
     }
 
     /**
