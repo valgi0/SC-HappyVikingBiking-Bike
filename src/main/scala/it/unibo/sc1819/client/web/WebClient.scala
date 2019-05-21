@@ -71,13 +71,8 @@ object WebClient {
       }
     })
 
-  mockClient.executeAPICall("127.0.0.1",HttpMethod.POST, "/mockpath",8888 ,
-    ar => {
-      if (ar.succeeded()) {
-        println("Risposta gestita correttamente")
-      } else {
-        println("Errore nella richiesta")
-      }
-    }, Some(Message("Mamhood puzza")))
+  mockClient.executeAPICall("127.0.0.1",HttpMethod.POST, "/mockpath",8080 ,
+    handlerToSuccessFailureConversion(s => println("Sucesso"), s=> println("Fallimento"))
+    , Some(Message("Mamhood puzza")))
 
 }*/
