@@ -1,13 +1,14 @@
 package it.unibo.sc1819.client.web
 
-import io.vertx.core.{AsyncResult, Handler}
+import io.vertx.core.AsyncResult
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.http.HttpMethod
 import io.vertx.scala.core.Vertx
 import io.vertx.scala.ext.web.client.HttpResponse
-import it.unibo.sc1819.client.web.RequestMessage.JsonRequest
+import it.unibo.sc1819.client.web.RequestMessage.{JsonRequest, Message}
 import org.json4s.DefaultFormats
 import org.json4s.jackson.Serialization.write
+
 
 /**
   * A generic web client used for remote call via vertx
@@ -42,10 +43,41 @@ object WebClient {
       method match  {
         case HttpMethod.GET => client.get(port, remoteServer, remotePath).send(handler(_))
         case HttpMethod.POST if body.isDefined => client.post(port, remoteServer, remotePath)
-          .sendJson(write(body.get), handler(_))
+          .putHeader("Content-Type", "application/json")
+          .sendBuffer(body.get, handler(_))
         case HttpMethod.POST => client.post(port, remoteServer, remotePath)
         case _ =>
       }
   }
 
+  /**
+    * Implicit used to convert a body object into a buffer to make serialization great again
+    * @param body the body to be convert into a buffer
+    * @return a Buffer object, so it's everything fine for JS and Java
+    */
+  implicit def bodyToBuffer(body:JsonRequest):Buffer = Buffer.buffer(write(body))
 }
+
+/*object WebClientMain extends App {
+
+  val mockClient = WebClient(Vertx.vertx)
+
+  mockClient.executeAPICall("127.0.0.1",HttpMethod.GET, "/puffarbacco",8080 ,
+    ar => {
+      if (ar.succeeded()) {
+        println("Risposta gestita correttamente")
+      } else {
+        println("Errore nella richiesta")
+      }
+    })
+
+  mockClient.executeAPICall("127.0.0.1",HttpMethod.POST, "/mockpath",8888 ,
+    ar => {
+      if (ar.succeeded()) {
+        println("Risposta gestita correttamente")
+      } else {
+        println("Errore nella richiesta")
+      }
+    }, Some(Message("Mamhood puzza")))
+
+}*/
