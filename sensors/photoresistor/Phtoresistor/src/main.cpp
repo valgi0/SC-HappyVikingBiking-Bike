@@ -7,7 +7,7 @@ di 100H che lo collega alla massa
 */
 
 int photo = A0;
-int led = 12;
+int led = 13;
 
 
 void setup() {

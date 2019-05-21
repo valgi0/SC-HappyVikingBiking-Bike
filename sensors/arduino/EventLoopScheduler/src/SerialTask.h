@@ -21,10 +21,9 @@ class SerialTask : public Task {
   int old_state[STATE_SIZE] = {'\0'};
 
   //keys for serial comunication
-  const char* key_light = "LIGHT:";
-  const char* key_gps_lat ="GPSLAT:";
-  const char* key_gps_long ="GPSLON:";
-  const char* key_pollution ="POLLUTION:";
+  const char* key_light = LIGHT;
+  const char* key_gps =GPS;
+  const char* key_pollution =POLLUTION;
 
 public:
   SerialTask(int *first_state);
@@ -42,11 +41,10 @@ private:
           case RESULT_LIGHT: Serial.print(key_light);
             Serial.println(new_state[i]);
             break;
-          case RESULT_GPS_LAT: Serial.print(key_gps_lat);
+          case RESULT_GPS_LONG: Serial.print(key_gps);
             Serial.println(new_state[i]);
-            break;
-          case RESULT_GPS_LONG: Serial.print(key_gps_long);
-            Serial.println(new_state[i]);
+            Serial.println(',');
+            Serial.println(new_state[++i]);
             break;
           case RESULT_POLLUTION: Serial.print(key_pollution);
             Serial.println(new_state[i]);
