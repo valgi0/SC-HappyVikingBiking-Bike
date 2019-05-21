@@ -8,6 +8,12 @@ package object web {
 
   val OK_CODE = 200
 
+  /**
+    * A converter that merges together two handlers
+    * @param onSuccess the handler if the status code is 200
+    * @param onFailure the handler for every other situation.
+    * @return a AsyncResult => Unit method
+    */
   def handlerToSuccessFailureConversion(onSuccess:Option[String] => Unit,
                                                  onFailure:Option[String] => Unit):
   AsyncResult[HttpResponse[Buffer]] => Unit = ar => {
@@ -17,6 +23,19 @@ package object web {
       } else {
         onFailure(ar.result().bodyAsString())
       }
+    } else {
+      onFailure(Some(ar.cause().getMessage))
+    }
+  }
+
+  def handlerToOnlyFailureConversion(onFailure:Option[String] => Unit):
+  AsyncResult[HttpResponse[Buffer]] => Unit = ar => {
+    if(ar.succeeded()) {
+      if(ar.result().statusCode() != OK_CODE) {
+        onFailure(ar.result().bodyAsString())
+      }
+    } else {
+      onFailure(Some(ar.cause().getMessage))
     }
   }
 
