@@ -75,6 +75,10 @@ trait BikeClient {
 
 object BikeClient {
 
+  def apply(vertx: Vertx, bikeID: String, remoteServer: String, remotePort: Int,
+            rackServer:String, rackPort:Int): BikeClient =
+    new BikeClientImpl(vertx, bikeID, remoteServer, remotePort, rackServer, rackPort)
+
   private class BikeClientImpl(val vertxContext:Vertx, override val bikeID:String,
                                override val remoteServer:String, override val remotePort:Int,
                                override val rackServer:String, override val rackPort:Int) extends BikeClient {
