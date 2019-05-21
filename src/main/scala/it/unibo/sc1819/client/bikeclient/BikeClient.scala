@@ -88,37 +88,37 @@ object BikeClient {
     implicit val formats: DefaultFormats.type = DefaultFormats
 
     override def notifyPosition(gpsData: JsonRequest): Unit =
-      executePOSTRemoteCall(RoutesAPI.GPS_REMOTE_PATH, failureHandler, Some(gpsData))
+      executePOSTRemoteCall(RoutesAPI.GPS_REMOTE_PATH, failureHandler _ , Some(gpsData))
 
     override def notifyAirQuality(airQualityData: JsonRequest): Unit =
-      executePOSTRemoteCall(RoutesAPI.AQ_REMOTE_PATH, failureHandler, Some(airQualityData))
+      executePOSTRemoteCall(RoutesAPI.AQ_REMOTE_PATH, failureHandler _ , Some(airQualityData))
 
     override def notifyCollisionQuality(collisionData: JsonRequest): Unit =
-      executePOSTRemoteCall(RoutesAPI.COLLISION_REMOTE_PATH, failureHandler, Some(collisionData))
+      executePOSTRemoteCall(RoutesAPI.COLLISION_REMOTE_PATH, failureHandler _ , Some(collisionData))
 
     override def notifyLock(): Unit =
-      executePOSTRackCall(RoutesAPI.LOCK_REMOTE_PATH, failureHandler)
+      executePOSTRackCall(RoutesAPI.LOCK_REMOTE_PATH, failureHandler _ )
 
     override def fetchConfiguration(): Unit = executePOSTRemoteCall(RoutesAPI.CONFIGURATION_REMOTE_PATH,
       onFetchedConfigurationData, failureHandler, Some(BikeIDMessage(bikeID)))
 
     private def executePOSTRemoteCall(path:String, onSuccess:Option[String] => Unit,
                                       onFailure: Option[String] => Unit,
-                                      payLoad:Option[JsonRequest] = None):Unit = {
+                                      payLoad:Option[JsonRequest]):Unit = {
       webClient.executeAPICall(remoteServer, HttpMethod.POST, path ,remotePort,
         handlerToSuccessFailureConversion(onSuccess, onFailure), payLoad )
     }
 
     private def executePOSTRackCall(path:String, onSuccess:Option[String] => Unit,
                                       onFailure: Option[String] => Unit,
-                                      payLoad:Option[JsonRequest] = None):Unit = {
+                                      payLoad:Option[JsonRequest]):Unit = {
       webClient.executeAPICall(rackServer, HttpMethod.POST, path ,rackPort,
         handlerToSuccessFailureConversion(onSuccess, onFailure), payLoad )
     }
 
     private def executePOSTRemoteCall(path:String,
                                       onFailure: Option[String] => Unit,
-                                      payLoad:Option[JsonRequest] = None):Unit = {
+                                      payLoad:Option[JsonRequest]):Unit = {
       webClient.executeAPICall(remoteServer, HttpMethod.POST, path ,remotePort,
         handlerToOnlyFailureConversion(onFailure), payLoad )
     }
@@ -132,9 +132,9 @@ object BikeClient {
 
     private def failureHandler(errorMessage:Option[String]):Unit = errorMessage match {
       case Some(msg) => executePOSTRemoteCall(RoutesAPI.ERROR_NOTIFICATION_PATH,
-        failureHandler, Some(ErrorLogMessage(bikeID, new Date().toString + ":" + msg )))
+        failureHandler _, Some(ErrorLogMessage(bikeID, new Date().toString + ":" + msg )))
       case _ => executePOSTRemoteCall(RoutesAPI.ERROR_NOTIFICATION_PATH,
-        failureHandler, Some(ErrorLogMessage(bikeID, new Date().toString + ":" + "ERROR CAUSE NOT SPECIFIED" )))
+        failureHandler _ , Some(ErrorLogMessage(bikeID, new Date().toString + ":" + "ERROR CAUSE NOT SPECIFIED" )))
     }
 
     private def onFetchedConfigurationData(configuration:Option[String]) = {
