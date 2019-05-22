@@ -16,6 +16,7 @@
 #define RESULT_GPS_LONG 14
 #define RESULT_GPS_LAT 15
 #define RESULT_POLLUTION 16
+#define STATE 19
 
 // raspberry comunication
 #define SETUP "SETUP:"
@@ -34,6 +35,12 @@
 #define FALSE 0
 #define TRUE 1
 #define LEN(x) sizeof(x)/sizeof(*x)
+
+// State Arduino
+#define RUNNING 1
+#define SLEEPING 0
+#define UNLOOKING 2
+#define LOOKING 3
 
 
 #endif

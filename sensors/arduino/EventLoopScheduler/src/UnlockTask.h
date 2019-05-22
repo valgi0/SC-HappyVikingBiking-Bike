@@ -1,29 +1,38 @@
-#ifndef __unlock_task__
-#define __unlock_task__
+#ifndef __UNLOCK_TASK__
+#define __UNLOCK_TASK__
 #include "Task.h"
 #include "mylib.h"
 #include <Arduino.h>
 
-class UnlockTask : public Task{
+class UnlockTask{
   int *_state;
+  static UnlockTask *s_instance;
 
 public:
-  UnlockTask();
-  void init(int period);
-  void tick(int *state);
   void start(int *state);
 
-private:
+  static UnlockTask* instance(){
+    if(!s_instance){
+      s_instance = new UnlockTask;
+    }
+    return s_instance;
+  }
+
   void waitForRaspBerry(){
+    _state[STATE] = RUNNING;
+    Serial.write("Im wating for raspberry\n");
+    Serial.flush();
+    delay(500);
     int complete=FALSE;
     String buffer;
     int k1, k2;
     // wait until serail is available
-    while(!Serial.available()){
+    while(Serial.available() == 0){
       delay(100);
     }
     delay(500);
-    //Serial.println("UT: Found something");
+    Serial.println("UT: Found something");
+    Serial.flush();
     // read until all keys are read
     while(!complete){
       buffer.concat(Serial.readString());
@@ -44,6 +53,8 @@ private:
     return;
   };
 };
+
+
 
 
 
