@@ -48,7 +48,6 @@ public:
       complete = TRUE;
       String light = buffer.substring(k1 + LEN(SU_LIGHT) -1, k2);
       _state[THRESHOLD] = light.toInt();
-
     }
     return;
   };

@@ -35,6 +35,7 @@
 #define FALSE 0
 #define TRUE 1
 #define LEN(x) sizeof(x)/sizeof(*x)
+#define MINIMUM_LIGHT_ALLOWED 20
 
 // State Arduino
 #define RUNNING 1
