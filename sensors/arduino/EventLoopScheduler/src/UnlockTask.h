@@ -20,9 +20,9 @@ public:
 
   void waitForRaspBerry(){
     _state[STATE] = RUNNING;
-    Serial.write("Im wating for raspberry\n");
-    Serial.flush();
-    delay(500);
+    //Serial.write("Im wating for raspberry\n");
+    //Serial.flush();
+    //delay(500);
     int complete=FALSE;
     String buffer;
     int k1, k2;
@@ -31,8 +31,8 @@ public:
       delay(100);
     }
     delay(500);
-    Serial.println("UT: Found something");
-    Serial.flush();
+    //Serial.println("UT: Found something");
+    //Serial.flush();
     // read until all keys are read
     while(!complete){
       buffer.concat(Serial.readString());

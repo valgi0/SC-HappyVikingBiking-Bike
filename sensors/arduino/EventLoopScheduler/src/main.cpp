@@ -5,6 +5,7 @@
 #include "debugTask.h"
 #include "SerialTask.h"
 #include "UnlockTask.h"
+#include "AirPollutionTask.h"
 #include "mylib.h"
 
 // default value for all system
@@ -15,6 +16,8 @@ const int def_threshold = 100;
 const int def_light_sensor_pin = A0;
 const int def_serial_period = 300;
 const int def_button_pin = 2;
+const int def_pollution_sensor_pin = A1;
+const int def_pollution_sensor_period = 3000;
 const Scheduler scheduler;
 
 //state
@@ -36,6 +39,9 @@ void setup() {
   internalState[SERIAL_TASK_PERIOD] = def_serial_period;
   internalState[PIN_BUTTON] = def_button_pin;
   internalState[STATE] = SLEEPING;
+  internalState[PIN_POLLUTION_SENSOR] = def_pollution_sensor_pin;
+  internalState[POLLUTION_SENSOR_PERIOD] = def_pollution_sensor_period;
+
 
   // initial setup for arduino
   Serial.begin(9600);
@@ -49,8 +55,8 @@ void setup() {
   UnlockTask::instance() -> start(internalState);
 
   // tasks generation
-  Task* t1 = new debugTask("I'am a task", 1);
-  t1 -> init(1000);
+  //Task* t1 = new debugTask("I'am a task", 1);
+  //t1 -> init(1000);
   //scheduler.addTask(t1);
 
   Task* t2 = new LightSensorTask(
@@ -64,6 +70,10 @@ void setup() {
   Task* t3 = new SerialTask(internalState);
   t3 -> init(internalState[SERIAL_TASK_PERIOD]);
   scheduler.addTask(t3);
+
+  Task* t4 = new AirPollutionTask();
+  t4 -> init(internalState[POLLUTION_SENSOR_PERIOD]);
+  scheduler.addTask(t4);
 }
 
 
