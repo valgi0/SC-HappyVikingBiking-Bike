@@ -11,7 +11,7 @@ version '0.1.0'
 sourceCompatibility = 1.8
 
 //Main class name
-mainClassName = 'it.unibo.sc1819.worker.MockWorkerMain'
+mainClassName = 'it.unibo.sc1819.Main'
 
 //List of variables used in the file.
 ext {
@@ -34,7 +34,6 @@ ext {
     // SLF4J
     slf4jApiVersion = '1.7.12'
     logbackVersion = '1.2.3'
-
 }
 
 
@@ -82,10 +81,10 @@ dependencies {
     // https://mvnrepository.com/artifact/org.bidib.jbidib.org.qbang.rxtx/rxtxcomm
     compile group: 'org.bidib.jbidib.org.qbang.rxtx', name: 'rxtxcomm', version: '2.2'
 
-
-
-
-
+    // JSON4S Json Library
+    compile group: 'org.json4s', name: 'json4s-native_2.12', version: '3.6.0'
+    compile group: 'org.json4s', name: 'json4s-jackson_2.12', version: '3.6.0'
+    
 }
 
 defaultTasks 'clean', 'build', 'javadoc', 'scaladoc', 'shadowJar'
