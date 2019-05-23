@@ -49,6 +49,10 @@ object ClientVerticle {
 
   val VALUE_SEPARATOR = ","
 
+  def apply(bikeID:String,  vertxContext:Vertx, remoteAddress:String, remotePort:Int,
+  rackAddress:String, rackPort:Int): ClientVerticle =
+    new ClientVerticleImpl(bikeID, vertxContext, remoteAddress, remotePort, rackAddress, rackPort)
+
   private def parseGPSMessage(msg:String, bikeID:String):GPSMessage = {
    val values = msg.replace(" ","").split(VALUE_SEPARATOR).toStream.map(keyval => keyval.split("=")(1)).toList
     GPSMessage(values.head, values(1), bikeID)
