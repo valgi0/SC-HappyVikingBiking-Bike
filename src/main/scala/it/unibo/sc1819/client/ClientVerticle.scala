@@ -1,8 +1,12 @@
 package it.unibo.sc1819.client
 
 import io.vertx.lang.scala.ScalaVerticle
+import io.vertx.scala.core.Vertx
 import it.unibo.sc1819.client.ClientVerticle.VALUE_SEPARATOR
+import it.unibo.sc1819.client.bikeclient.BikeClient
 import it.unibo.sc1819.client.web.RequestMessage.{AQMessage, CollisionMessage, GPSMessage}
+import it.unibo.sc1819.client.web.WebClient
+import it.unibo.sc1819.util.messages.Topic
 
 trait ClientVerticle extends ScalaVerticle{
 
@@ -55,9 +59,58 @@ object ClientVerticle {
     AQMessage(values(2), values.head, values(1), bikeID)
   }
 
-  private def parseCollMessage(msg:String, bikeID:String): Unit = {
+  private def parseCollMessage(msg:String, bikeID:String): CollisionMessage = {
     val tempMessage = parseGPSMessage(msg, bikeID)
     CollisionMessage(tempMessage.latitude, tempMessage.longitude, tempMessage.bikeID)
+  }
+
+  private class ClientVerticleImpl(override val bikeID:String, val vertxContext:Vertx,
+                                   val remoteAddress:String, val remotePort:Int,
+                                   val rackAddress:String, val rackPort:Int) extends ClientVerticle {
+
+    val eventBus = vertxContext.eventBus
+    val bikeClient = BikeClient(vertxContext, bikeID ,remoteAddress, remotePort, rackAddress, rackPort)
+
+    this.setup()
+
+
+    override def onGPSMessageReceived(gpsMessage: String): Unit =
+      bikeClient.notifyPosition(parseGPSMessage(gpsMessage, bikeID))
+
+    override def onAQMessageReceived(aqMessage: String): Unit =
+      bikeClient.notifyAirQuality(parseAQMessage(aqMessage, bikeID))
+
+    override def onCollisionMessageReceived(collisionMessage: String): Unit =
+      bikeClient.notifyCollision(parseCollMessage(collisionMessage, bikeID))
+
+    override def onUnLockMessageReceived(): Unit = bikeClient.fetchConfiguration()
+
+    override def onLockMessageReceived(): Unit = bikeClient.notifyLock()
+
+    private def setup():Unit = {
+      listenForMessages(Topic.GPS_TOPIC_WEB, onGPSMessageReceived)
+      listenForMessages(Topic.AQ_TOPIC_WEB, onAQMessageReceived)
+      listenForMessages(Topic.COLLISION_TOPIC_WEB, onCollisionMessageReceived)
+      listenForMessagesNoBody(Topic.LOCK_TOPIC_WEB, onLockMessageReceived)
+      listenForMessagesNoBody(Topic.UNLOCK_TOPIC_WEB, onUnLockMessageReceived)
+    }
+
+    /**
+      * Define a listener method to make possible listening on every channel
+      * @param topic the topic on which the listener will listen
+      * @param messageHandler the handler to call when a message is received.
+      */
+    private def listenForMessages(topic:String, messageHandler:String => Unit ) = {
+      eventBus.consumer[String](topic).handler(message => {
+        messageHandler(message.body())
+      })
+    }
+
+    private def listenForMessagesNoBody(topic:String, messageHandler:  => Unit ) = {
+      eventBus.consumer[String](topic).handler(_ => {
+        messageHandler
+      })
+    }
   }
 }
 

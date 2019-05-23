@@ -59,7 +59,7 @@ trait BikeClient {
   /**
     * Start a remote call to the server to store the air quality data
     */
-  def notifyCollisionQuality(collisionData:JsonRequest):Unit
+  def notifyCollision(collisionData:JsonRequest):Unit
 
   /**
     * Notify the remote rack of a lock.
@@ -93,7 +93,7 @@ object BikeClient {
     override def notifyAirQuality(airQualityData: JsonRequest): Unit =
       executePOSTRemoteCall(RoutesAPI.AQ_REMOTE_PATH, failureHandler _ , Some(airQualityData))
 
-    override def notifyCollisionQuality(collisionData: JsonRequest): Unit =
+    override def notifyCollision(collisionData: JsonRequest): Unit =
       executePOSTRemoteCall(RoutesAPI.COLLISION_REMOTE_PATH, failureHandler _ , Some(collisionData))
 
     override def notifyLock(): Unit =
