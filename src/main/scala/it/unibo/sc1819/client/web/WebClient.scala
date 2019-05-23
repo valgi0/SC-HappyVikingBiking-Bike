@@ -58,21 +58,3 @@ object WebClient {
   implicit def bodyToBuffer(body:JsonRequest):Buffer = Buffer.buffer(write(body))
 }
 
-/*object WebClientMain extends App {
-
-  val mockClient = WebClient(Vertx.vertx)
-
-  mockClient.executeAPICall("127.0.0.1",HttpMethod.GET, "/puffarbacco",8080 ,
-    ar => {
-      if (ar.succeeded()) {
-        println("Risposta gestita correttamente")
-      } else {
-        println("Errore nella richiesta")
-      }
-    })
-
-  mockClient.executeAPICall("127.0.0.1",HttpMethod.POST, "/mockpath",8080 ,
-    handlerToSuccessFailureConversion(s => println("Sucesso"), s=> println("Fallimento"))
-    , Some(Message("Mamhood puzza")))
-
-}*/

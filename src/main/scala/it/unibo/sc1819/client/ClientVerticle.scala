@@ -119,8 +119,3 @@ object ClientVerticle {
   }
 }
 
-object RunTimeMain extends App {
-  val string = "lat = 20, long = 30"
-  val values = string.replace(" ","").split(VALUE_SEPARATOR).toStream.map(keyval => keyval.split("=")(1)).toList
-  println(values)
-}
