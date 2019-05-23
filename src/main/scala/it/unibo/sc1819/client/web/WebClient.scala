@@ -45,7 +45,7 @@ object WebClient {
         case HttpMethod.POST if body.isDefined => client.post(port, remoteServer, remotePath)
           .putHeader("Content-Type", "application/json")
           .sendBuffer(body.get, handler(_))
-        case HttpMethod.POST => client.post(port, remoteServer, remotePath)
+        case HttpMethod.POST => client.post(port, remoteServer, remotePath).send(handler(_))
         case _ =>
       }
   }

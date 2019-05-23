@@ -91,12 +91,13 @@ object ClientVerticle {
 
     override def onLockMessageReceived(): Unit = bikeClient.notifyLock()
 
+
     private def setup():Unit = {
       listenForMessages(Topic.GPS_TOPIC_WEB, onGPSMessageReceived)
       listenForMessages(Topic.AQ_TOPIC_WEB, onAQMessageReceived)
       listenForMessages(Topic.COLLISION_TOPIC_WEB, onCollisionMessageReceived)
-      listenForMessagesNoBody(Topic.LOCK_TOPIC_WEB, onLockMessageReceived)
-      listenForMessagesNoBody(Topic.UNLOCK_TOPIC_WEB, onUnLockMessageReceived)
+      listenForMessagesNoBody(Topic.LOCK_TOPIC_WEB, () => this.onLockMessageReceived())
+      listenForMessagesNoBody(Topic.UNLOCK_TOPIC_WEB, () => this.onUnLockMessageReceived())
     }
 
     /**
@@ -110,9 +111,9 @@ object ClientVerticle {
       })
     }
 
-    private def listenForMessagesNoBody(topic:String, messageHandler:  => Unit ) = {
+    private def listenForMessagesNoBody(topic:String, messageHandler: ()  => Unit ) = {
       eventBus.consumer[String](topic).handler(_ => {
-        messageHandler
+        messageHandler()
       })
     }
   }
