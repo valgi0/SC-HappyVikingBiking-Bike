@@ -2,7 +2,9 @@ package it.unibo.sc1819
 
 import io.vertx.scala.core.Vertx
 import it.unibo.sc1819.client.ClientVerticle
+import it.unibo.sc1819.util.messages.Topic
 import it.unibo.sc1819.worker.WorkerVerticle
+import it.unibo.sc1819.worker.serial.messages.SerialMessage
 import org.rogach.scallop.{ScallopConf, ScallopOption}
 
 class Conf(arguments: Seq[String]) extends ScallopConf(arguments) {
@@ -18,11 +20,13 @@ class Conf(arguments: Seq[String]) extends ScallopConf(arguments) {
 
 object Main extends App {
 
+  val MockConfigurationMessage = "LIGHT=75END"
+
   val conf = new Conf(args)
   var remoteaddress = "192.168.1.155"
   var remoteport = 8080
   var rackaddress = "192.168.1.155"
-  var rackport = 8888
+  var rackport = 8080
   var bikeID = "bk-000000"
   var serialAddress = "/dev/ttyS80"
   var serialBauldRate = 9600
@@ -42,4 +46,11 @@ object Main extends App {
   vertx.deployVerticle(workerVerticle)
   vertx.deployVerticle(clientVerticle)
 
+  Thread.sleep(6000)
+
+  vertx.eventBus().publish(Topic.SETUP_TOPIC_WORKER, MockConfigurationMessage)
+
 }
+
+
+

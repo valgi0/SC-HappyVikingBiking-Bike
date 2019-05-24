@@ -123,8 +123,8 @@ object WorkerVerticle {
 
     private def setup(): Unit = {
       listenForMessages(Topic.GPS_TOPIC_WORKER, onGPSMessage)
-        .completionHandler(_ => listenForMessagesNoBody(Topic.LOCK_TOPIC_WORKER, onBikeLock)
-          .completionHandler(_ =>   listenForMessagesNoBody(Topic.UNLOCK_TOPIC_WORKER, onBikeUnlock)
+        .completionHandler(_ => listenForMessagesNoBody(Topic.LOCK_TOPIC_WORKER, () => onBikeLock())
+          .completionHandler(_ =>   listenForMessagesNoBody(Topic.UNLOCK_TOPIC_WORKER, () => onBikeUnlock())
             .completionHandler(_ => {
               listenForMessages(Topic.AQ_TOPIC_WORKER, onAQMessage)
               listenForMessages(Topic.COLLISION_TOPIC_WORKER, onCollisionMessage)
