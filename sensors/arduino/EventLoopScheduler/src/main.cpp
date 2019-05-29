@@ -6,6 +6,7 @@
 #include "SerialTask.h"
 #include "UnlockTask.h"
 #include "AirPollutionTask.h"
+#include "GPSTask.h"
 #include "mylib.h"
 
 // default value for all system
@@ -18,6 +19,7 @@ const int def_serial_period = 300;
 const int def_button_pin = 2;
 const int def_pollution_sensor_pin = A1;
 const int def_pollution_sensor_period = 3000;
+const int def_gps_period = 500;
 const Scheduler scheduler;
 
 //state
@@ -26,6 +28,8 @@ int internalState[STATE_SIZE] = {'\0'};
 // set up singleton
 UnlockTask *UnlockTask::s_instance = 0;
 
+//chords
+float lat, lon;
 
 
 void setup() {
@@ -41,7 +45,9 @@ void setup() {
   internalState[STATE] = SLEEPING;
   internalState[PIN_POLLUTION_SENSOR] = def_pollution_sensor_pin;
   internalState[POLLUTION_SENSOR_PERIOD] = def_pollution_sensor_period;
-
+  internalState[RESULT_GPS_LAT] = (int)&lat;
+  internalState[RESULT_GPS_LONG] = (int)&lon;
+  internalState[GPS_PERIOD] = def_gps_period;
 
   // initial setup for arduino
   Serial.begin(9600);
@@ -74,6 +80,10 @@ void setup() {
   Task* t4 = new AirPollutionTask();
   t4 -> init(internalState[POLLUTION_SENSOR_PERIOD]);
   scheduler.addTask(t4);
+
+  Task* t5 = new GPSTask();
+  t5 -> init(internalState[GPS_PERIOD]);
+  scheduler.addTask(t5);
 }
 
 
@@ -83,6 +93,7 @@ void loop() {
     case RUNNING: scheduler.schedule();
       break;
     case SLEEPING: delay(200);
+    //Serial.println("I'm in sleeping mode");
       break;
     case UNLOOKING: UnlockTask::instance()->waitForRaspBerry();
       break;

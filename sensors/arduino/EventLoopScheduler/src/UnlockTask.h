@@ -20,7 +20,7 @@ public:
 
   void waitForRaspBerry(){
     _state[STATE] = RUNNING;
-    //Serial.write("Im wating for raspberry\n");
+    Serial.write("Im wating for raspberry\n");
     //Serial.flush();
     //delay(500);
     int complete=FALSE;
@@ -36,7 +36,7 @@ public:
     // read until all keys are read
     while(!complete){
       buffer.concat(Serial.readString());
-      //Serial.print("BUFFER READ: ");Serial.println(buffer);
+      Serial.print("BUFFER READ: ");Serial.println(buffer);
       //Serial.println(buffer.indexOf(SETUP));
       //buffer.indexOf(SETUP);
       k1 = buffer.indexOf(SU_LIGHT);

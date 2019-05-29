@@ -6,6 +6,7 @@
 
 
 void AirPollutionTask::tick(int* state){
+  //Serial.println("AQ TASK CALLED");
   int value = 0;
   value = analogRead(state[PIN_POLLUTION_SENSOR]);
   state[RESULT_POLLUTION] = value;

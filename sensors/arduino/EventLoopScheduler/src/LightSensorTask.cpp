@@ -31,6 +31,7 @@ void LightSensorTask::init(int period){
 };
 
 void LightSensorTask::tick(int *state){
+  //Serial.println("LIGHT TASK CALLED");
   int light = analogRead(this -> pinSensor);
   state[RESULT_LIGHT] = light;
   if(state[THRESHOLD] != this -> threshold &&

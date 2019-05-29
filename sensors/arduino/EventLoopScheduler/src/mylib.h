@@ -14,6 +14,7 @@
 #define PIN_BUTTON 6
 #define PIN_POLLUTION_SENSOR 7
 #define POLLUTION_SENSOR_PERIOD 8
+#define GPS_PERIOD 9
 #define RESULT_LIGHT 13
 #define RESULT_GPS_LONG 14
 #define RESULT_GPS_LAT 15
@@ -30,7 +31,14 @@
 //key
 #define LIGHT "LIGHT:"
 #define GPS "GPS:"
-#define POLLUTION "POLLUTION:"
+#define POLLUTION "AQ:"  //POLLUTION:lat=11111,lon=11111,pol=11111
+#define GPS_LAT "lat="  //GPS:lat=11111,lon=111111
+#define GPS_LON ",lon="
+#define COLLISION "COLL:" //COLL:lat=1111,log=11111
+
+#define FAKE_GPS "lat=1111111,lon=1111111,"
+
+
 
 
 //General setting

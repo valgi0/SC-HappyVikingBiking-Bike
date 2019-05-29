@@ -38,15 +38,21 @@ private:
         //if find one it prepares a message KEY:VALUE
 
         switch (i) {
-          case RESULT_LIGHT: Serial.print(key_light);
-            Serial.println(new_state[i]);
-            break;
+        //  case RESULT_LIGHT: Serial.print(key_light);
+        //    Serial.println(new_state[i]);
+        //    break;
           case RESULT_GPS_LONG: Serial.print(key_gps);
-            Serial.println(new_state[i]);
-            Serial.println(',');
-            Serial.println(new_state[++i]);
+            Serial.print(GPS_LAT);
+            Serial.print(*((float*)new_state[RESULT_GPS_LAT]));
+            Serial.print(GPS_LON);
+            Serial.println(*((float*)new_state[RESULT_GPS_LONG]));
             break;
           case RESULT_POLLUTION: Serial.print(key_pollution);
+            Serial.print(GPS_LAT);
+            Serial.print(*((float*)new_state[RESULT_GPS_LAT]));
+            Serial.print(GPS_LON);
+            Serial.print(*((float*)new_state[RESULT_GPS_LONG]));
+            Serial.print("pol=");
             Serial.println(new_state[i]);
             break;
         }
