@@ -1,5 +1,7 @@
 package it.unibo.sc1819.client
 
+import java.util.Date
+
 import io.vertx.lang.scala.ScalaVerticle
 import io.vertx.scala.core.Vertx
 import it.unibo.sc1819.client.ClientVerticle.VALUE_SEPARATOR
@@ -55,17 +57,17 @@ object ClientVerticle {
 
   private def parseGPSMessage(msg:String, bikeID:String):GPSMessage = {
    val values = msg.replace(" ","").split(VALUE_SEPARATOR).toStream.map(keyval => keyval.split("=")(1)).toList
-    GPSMessage(values.head, values(1), bikeID)
+    GPSMessage(values.head, values(1), bikeID, new Date().getTime)
   }
 
   private def parseAQMessage(msg:String, bikeID:String):AQMessage = {
     val values = msg.replace(" ","").split(VALUE_SEPARATOR).toStream.map(keyval => keyval.split("=")(1)).toList
-    AQMessage(values(2), values.head, values(1), bikeID)
+    AQMessage(values(2), values.head, values(1), bikeID, new Date().getTime)
   }
 
   private def parseCollMessage(msg:String, bikeID:String): CollisionMessage = {
     val tempMessage = parseGPSMessage(msg, bikeID)
-    CollisionMessage(tempMessage.latitude, tempMessage.longitude, tempMessage.bikeID)
+    CollisionMessage(tempMessage.latitude, tempMessage.longitude, tempMessage.bikeID, tempMessage.timeStamp)
   }
 
   private class ClientVerticleImpl(override val bikeID:String, val vertxContext:Vertx,

@@ -15,11 +15,11 @@ object RequestMessage {
 
   case class BikeIDMessage(bikeID:String) extends JsonRequest
 
-  case class GPSMessage(latitude:String, longitude:String, bikeID:String) extends JsonRequest
+  case class GPSMessage(latitude:String, longitude:String, bikeID:String, timeStamp:Long) extends JsonRequest
 
-  case class AQMessage(airQuality:String, latitude:String, longitude:String, bikeID:String) extends JsonRequest
+  case class AQMessage(airQuality:String, latitude:String, longitude:String, bikeID:String, timeStamp:Long) extends JsonRequest
 
-  case class CollisionMessage(latitude:String, longitude:String, bikeID:String) extends JsonRequest
+  case class CollisionMessage(latitude:String, longitude:String, bikeID:String, timeStamp:Long) extends JsonRequest
 
   case class LockMessage(bikeID:String) extends JsonRequest
 
