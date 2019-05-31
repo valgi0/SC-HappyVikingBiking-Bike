@@ -7,6 +7,7 @@
 #include "UnlockTask.h"
 #include "AirPollutionTask.h"
 #include "GPSTask.h"
+#include "AccTask.h"
 #include "mylib.h"
 
 // default value for all system
@@ -20,6 +21,14 @@ const int def_button_pin = 2;
 const int def_pollution_sensor_pin = A1;
 const int def_pollution_sensor_period = 3000;
 const int def_gps_period = 500;
+const int def_acc_period = 100;
+const int def_acc_x_pin = A2;
+const int def_acc_y_pin = A3;
+const int def_acc_z_pin = A4;
+const int def_acc_gzero_pin = 12;
+const int def_acc_sleep_pin = 11;
+const int def_acc_gsel_pin = 10;
+const int def_acc_selftest_pin = 9;
 const Scheduler scheduler;
 
 //state
@@ -48,6 +57,15 @@ void setup() {
   internalState[RESULT_GPS_LAT] = (int)&lat;
   internalState[RESULT_GPS_LONG] = (int)&lon;
   internalState[GPS_PERIOD] = def_gps_period;
+  internalState[PIN_ACC_X] = def_acc_x_pin;
+  internalState[PIN_ACC_Y] = def_acc_y_pin;
+  internalState[PIN_ACC_Z] = def_acc_z_pin;
+  internalState[PIN_ACC_GSEL] = def_acc_gsel_pin;
+  internalState[PIN_ACC_SLEEP] = def_acc_sleep_pin;
+  internalState[PIN_ACC_SELFTEST] = def_acc_selftest_pin;
+  internalState[PIN_ACC_ZG] = def_acc_gzero_pin;
+
+
 
   // initial setup for arduino
   Serial.begin(9600);
@@ -57,13 +75,8 @@ void setup() {
   // initial set up for scheduler
   scheduler.init(internalState[SCHEDULER_PERIOD], internalState);
 
-  // Let's start
-  UnlockTask::instance() -> start(internalState);
 
   // tasks generation
-  //Task* t1 = new debugTask("I'am a task", 1);
-  //t1 -> init(1000);
-  //scheduler.addTask(t1);
 
   Task* t2 = new LightSensorTask(
     internalState[PIN_LED_LIGHT],
@@ -84,6 +97,21 @@ void setup() {
   Task* t5 = new GPSTask();
   t5 -> init(internalState[GPS_PERIOD]);
   scheduler.addTask(t5);
+
+  Task* t6 = new AccTask(
+    internalState[PIN_ACC_X],
+    internalState[PIN_ACC_Y],
+    internalState[PIN_ACC_Z],
+    internalState[PIN_ACC_GSEL],
+    internalState[PIN_ACC_SLEEP],
+    internalState[PIN_ACC_SELFTEST],
+    internalState[PIN_ACC_ZG]
+  );
+  t6 -> init(internalState[ACC_PERIOD]);
+  scheduler.addTask(t6);
+
+  // Let's start
+  UnlockTask::instance() -> start(internalState);
 }
 
 
