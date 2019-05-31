@@ -6,9 +6,10 @@ import io.vertx.lang.scala.ScalaVerticle
 import io.vertx.scala.core.Vertx
 import it.unibo.sc1819.client.ClientVerticle.VALUE_SEPARATOR
 import it.unibo.sc1819.client.bikeclient.BikeClient
-import it.unibo.sc1819.client.web.RequestMessage.{AQMessage, CollisionMessage, GPSMessage}
+import it.unibo.sc1819.client.web.RequestMessage.{AQMessage, CollisionMessage, GPSMessage, LogMessage}
 import it.unibo.sc1819.client.web.WebClient
 import it.unibo.sc1819.util.messages.Topic
+import it.unibo.sc1819.client.web
 
 trait ClientVerticle extends ScalaVerticle{
 
@@ -65,9 +66,10 @@ object ClientVerticle {
     AQMessage(values(2), values.head, values(1), bikeID, new Date().getTime)
   }
 
-  private def parseCollMessage(msg:String, bikeID:String): CollisionMessage = {
+  private def parseCollMessage(msg:String, bikeID:String): LogMessage = {
     val tempMessage = parseGPSMessage(msg, bikeID)
-    CollisionMessage(tempMessage.latitude, tempMessage.longitude, tempMessage.bikeID, tempMessage.timeStamp)
+    LogMessage(tempMessage.bikeId, web.crashMessageCode,
+      "Crash registered at " + tempMessage.lat + ", " + tempMessage.lon)
   }
 
   private class ClientVerticleImpl(override val bikeID:String, val vertxContext:Vertx,

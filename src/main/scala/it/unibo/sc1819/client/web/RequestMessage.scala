@@ -13,13 +13,13 @@ object RequestMessage {
 
   case class Message(message: String) extends JsonRequest
 
-  case class BikeIDMessage(bikeID:String) extends JsonRequest
+  case class BikeIDMessage(bikeId:String) extends JsonRequest
 
-  case class GPSMessage(latitude:String, longitude:String, bikeID:String, timeStamp:Long) extends JsonRequest
+  case class GPSMessage(lat:String, lon:String, bikeId:String, data:Long) extends JsonRequest
 
-  case class AQMessage(airQuality:String, latitude:String, longitude:String, bikeID:String, timeStamp:Long) extends JsonRequest
+  case class AQMessage(air:String, lat:String, lon:String, bikeId:String, data:Long) extends JsonRequest
 
-  case class CollisionMessage(latitude:String, longitude:String, bikeID:String, timeStamp:Long) extends JsonRequest
+  case class CollisionMessage(lat:String, lon:String, bikeId:String, data:Long) extends JsonRequest
 
   case class LockMessage(bikeID:String) extends JsonRequest
 
@@ -29,7 +29,7 @@ object RequestMessage {
 
   case class Error(cause: Option[String] = None) extends JsonRequest
 
-  case class ErrorLogMessage(bikeID:String, errorMessage:String) extends JsonRequest
+  case class LogMessage(bikeId:String, liv:String, messaggio:String) extends JsonRequest
 }
 
 

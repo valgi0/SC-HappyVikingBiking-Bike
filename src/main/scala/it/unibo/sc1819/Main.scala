@@ -21,13 +21,14 @@ class Conf(arguments: Seq[String]) extends ScallopConf(arguments) {
 object Main extends App {
 
   val MockConfigurationMessage = "LIGHT=75END"
+  val gpsQualityMessage = "lat=109.23, lon=134.12"
 
   val conf = new Conf(args)
-  var remoteaddress = "192.168.1.155"
+  var remoteaddress = "127.0.0.1"
   var remoteport = 8080
   var rackaddress = "192.168.1.155"
   var rackport = 8080
-  var bikeID = "bk-000000"
+  var bikeID = "12"
   var serialAddress = "/dev/ttyS80"
   var serialBauldRate = 9600
 
@@ -41,14 +42,14 @@ object Main extends App {
 
 
   val vertx = Vertx.vertx
-  val workerVerticle = WorkerVerticle(serialAddress, serialBauldRate, vertx)
+ // val workerVerticle = WorkerVerticle(serialAddress, serialBauldRate, vertx)
   val clientVerticle = ClientVerticle(bikeID, vertx, remoteaddress, remoteport, remoteaddress, remoteport)
-  vertx.deployVerticle(workerVerticle)
+  //vertx.deployVerticle(workerVerticle)
   vertx.deployVerticle(clientVerticle)
 
   Thread.sleep(6000)
 
-  vertx.eventBus().publish(Topic.SETUP_TOPIC_WORKER, MockConfigurationMessage)
+  vertx.eventBus().publish(Topic.COLLISION_TOPIC_WEB, gpsQualityMessage)
 
 }
 

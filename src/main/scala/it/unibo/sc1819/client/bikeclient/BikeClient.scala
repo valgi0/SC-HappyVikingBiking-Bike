@@ -4,7 +4,7 @@ import java.util.Date
 
 import io.vertx.core.http.HttpMethod
 import io.vertx.scala.core.Vertx
-import it.unibo.sc1819.client.web.RequestMessage.{BikeIDMessage, ConfigurationMessage, ErrorLogMessage, JsonRequest}
+import it.unibo.sc1819.client.web.RequestMessage.{BikeIDMessage, ConfigurationMessage, LogMessage, JsonRequest}
 import it.unibo.sc1819.client.web.WebClient
 import it.unibo.sc1819.client.web._
 import it.unibo.sc1819.util.messages.Topic
@@ -130,11 +130,12 @@ object BikeClient {
         handlerToOnlyFailureConversion(onFailure), payLoad )
     }
 
+    //TODO STOP AFTER A WHILE
     private def failureHandler(errorMessage:Option[String]):Unit = errorMessage match {
-      case Some(msg) => executePOSTRemoteCall(RoutesAPI.ERROR_NOTIFICATION_PATH,
-        failureHandler _, Some(ErrorLogMessage(bikeID, new Date().toString + ":" + msg )))
-      case _ => executePOSTRemoteCall(RoutesAPI.ERROR_NOTIFICATION_PATH,
-        failureHandler _ , Some(ErrorLogMessage(bikeID, new Date().toString + ":" + "ERROR CAUSE NOT SPECIFIED" )))
+      case Some(msg) => executePOSTRemoteCall(RoutesAPI.LOG_NOTIFICATION_PATH,
+        failureHandler _, Some(LogMessage(bikeID, warningMessageCode,new Date().toString + ":" + msg )))
+      case _ => executePOSTRemoteCall(RoutesAPI.LOG_NOTIFICATION_PATH,
+        failureHandler _ , Some(LogMessage(bikeID, warningMessageCode ,new Date().toString + ":" + "ERROR CAUSE NOT SPECIFIED" )))
     }
 
     private def onFetchedConfigurationData(configuration:Option[String]) = {

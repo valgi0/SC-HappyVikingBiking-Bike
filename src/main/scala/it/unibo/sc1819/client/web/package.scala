@@ -39,4 +39,9 @@ package object web {
     }
   }
 
+  val infoMessageCode = "INFO"
+  val warningMessageCode = "WARNING"
+  val errorMessageCode = "ERROR"
+  val crashMessageCode = "CRASH"
+
 }
