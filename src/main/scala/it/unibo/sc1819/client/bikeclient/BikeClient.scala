@@ -139,8 +139,8 @@ object BikeClient {
     }
 
     private def onFetchedConfigurationData(configuration:Option[String]) = {
-      val deserializedConfiguration = read[ConfigurationMessage](configuration.get).toBikeMessage()
-      eventBus.publish(Topic.SETUP_TOPIC_WORKER, deserializedConfiguration)
+      val lightValue = read[ConfigurationMessage](configuration.get).luce
+      eventBus.publish(Topic.SETUP_TOPIC_WORKER, lightValue)
     }
   }
 }

@@ -29,9 +29,10 @@ object SerialMessage {
   val COLLISION_MESSAGE_KEY = "COLL"
   val LOCK_MESSAGE_KEY  = "LOCK"
   val UNLOCK_MESSAGE_KEY = "UNLOCK"
-  val SETUP_MESSAGE_KEY = "SETUP"
+  val SETUP_MESSAGE_KEY = "LIGHT"
   val SEPARATOR = ":"
   val EMPTY_VALUE = ""
+  val CONF_SEPARATOR = "="
 
   def apply(message:String): SerialMessage = {
     if(message.contains(SEPARATOR)) {
@@ -79,7 +80,9 @@ object SerialMessage {
                                       override val value:String = EMPTY_VALUE) extends SerialMessage
 
    case class SetupSerialMessage(override val key:String = SETUP_MESSAGE_KEY,
-                                      override val value:String = EMPTY_VALUE) extends SerialMessage
+                                      override val value:String = EMPTY_VALUE) extends SerialMessage {
+     override def toSerializedMessage(): String = key + CONF_SEPARATOR + value
+   }
 
 }
 

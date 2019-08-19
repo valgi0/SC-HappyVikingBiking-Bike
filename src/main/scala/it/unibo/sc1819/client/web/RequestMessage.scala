@@ -23,9 +23,7 @@ object RequestMessage {
 
   case class LockMessage(bikeID:String) extends JsonRequest
 
-  case class ConfigurationMessage() extends JsonRequest {
-    def toBikeMessage():String = "" //TODO PARSE THE STRING
-  }
+  case class ConfigurationMessage(luce:String) extends JsonRequest
 
   case class Error(cause: Option[String] = None) extends JsonRequest
 
