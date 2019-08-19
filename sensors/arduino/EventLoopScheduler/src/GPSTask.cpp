@@ -12,14 +12,15 @@ void GPSTask::init(int period){
 }
 
 void GPSTask::tick(int *state){
-  //Serial.println("GPS TASK CALLED");
-  if(gpsSerial.available()){
-    gps.encode(gpsSerial.read());
-    gps.f_get_position((float *) state[RESULT_GPS_LAT], (float*) state[RESULT_GPS_LONG]);
-    //Serial.print("Position Read: ");
-    //Serial.print("LAT: ");
-    //Serial.print(*((float*)state[RESULT_GPS_LAT]));
-    //Serial.print("  LON: ");
-    //Serial.println(*((float*)state[RESULT_GPS_LONG]));
+  while(gpsSerial.available()){
+    int c = gpsSerial.read();
+    if(gps.encode(c)){
+      gps.f_get_position((float *) state[RESULT_GPS_LAT], (float*) state[RESULT_GPS_LONG]);
+      //Serial.print("Position Read: ");
+      //Serial.print("LAT: ");
+      //Serial.print(*((float*)state[RESULT_GPS_LAT]), 7);
+      //Serial.print("  LON: ");
+      //Serial.println(*((float*)state[RESULT_GPS_LONG]), 7);
+    }
   }
 }

@@ -25,10 +25,10 @@ const int def_acc_period = 100;
 const int def_acc_x_pin = A2;
 const int def_acc_y_pin = A3;
 const int def_acc_z_pin = A4;
-const int def_acc_gzero_pin = 12;
-const int def_acc_sleep_pin = 11;
-const int def_acc_gsel_pin = 10;
-const int def_acc_selftest_pin = 9;
+const int def_acc_gzero_pin = 10;
+const int def_acc_sleep_pin = 12;
+const int def_acc_gsel_pin = 9;
+const int def_acc_selftest_pin = 11;
 const Scheduler scheduler;
 
 //state

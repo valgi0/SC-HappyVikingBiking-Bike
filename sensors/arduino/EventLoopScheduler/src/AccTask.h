@@ -21,10 +21,10 @@ public:
   void tick(int* state);
   void init(int period);
 private:
-  void checkIfItIsDown(int *state, int x, int y, int z){
 
+  void checkIfItIsDown(int *state, int x, int y, int z){
     //chek if bike is vertical
-    if(y > OFFSET_X && z >= OFFSET_Z){
+    if(abs(this->x - x) > OFFSET_X && abs(this->z - z) >= OFFSET_Z){
       state[RESULT_ACC] = TRUE;
     }
   };

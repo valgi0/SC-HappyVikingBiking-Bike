@@ -21,6 +21,18 @@ AccTask::AccTask(int x, int y, int z, int gsel, int sleep, int selftest, int zg)
 
 void AccTask::init(int period){
   Task::init(period);
+  int sumx=0, sumy=0, sumz=0;
+
+  for(int i = 0; i < 10 ; i ++){
+    sumx += this -> accelero.getXAccel();
+    sumy += this -> accelero.getYAccel();
+    sumz += this -> accelero.getZAccel();
+    delay(30);
+  }
+
+  this -> x = sumx / 10;
+  this -> y = sumy / 10;
+  this -> z = sumz / 10;
 }
 
 void AccTask::tick(int* state){

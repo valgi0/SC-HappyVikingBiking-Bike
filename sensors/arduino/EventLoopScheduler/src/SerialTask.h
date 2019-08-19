@@ -24,6 +24,7 @@ class SerialTask : public Task {
   const char* key_light = LIGHT;
   const char* key_gps =GPS;
   const char* key_pollution =POLLUTION;
+  const char* key_collision = COLLISION;
 
 public:
   SerialTask(int *first_state);
@@ -49,12 +50,19 @@ private:
             break;
           case RESULT_POLLUTION: Serial.print(key_pollution);
             Serial.print(GPS_LAT);
-            Serial.print(*((float*)new_state[RESULT_GPS_LAT]));
+            Serial.print(*((float*)new_state[RESULT_GPS_LAT]), 7);
             Serial.print(GPS_LON);
-            Serial.print(*((float*)new_state[RESULT_GPS_LONG]));
+            Serial.print(*((float*)new_state[RESULT_GPS_LONG]), 7);
             Serial.print("pol=");
             Serial.println(new_state[i]);
             break;
+          case RESULT_ACC: Serial.print(key_collision);
+            Serial.print(GPS_LAT);
+            Serial.print(*((float*)new_state[RESULT_GPS_LAT]), 7);
+            Serial.print(GPS_LON);
+            Serial.print(*((float*)new_state[RESULT_GPS_LONG]), 7);
+            old_state[i] = FALSE;
+            new_state[i] = FALSE;
         }
 
         //update the old state to the new one
