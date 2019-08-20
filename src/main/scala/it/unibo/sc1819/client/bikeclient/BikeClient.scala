@@ -99,8 +99,11 @@ object BikeClient {
     override def notifyLock(): Unit =
       executePOSTRackCall(RoutesAPI.LOCK_REMOTE_PATH, failureHandler _ )
 
-    override def fetchConfiguration(): Unit = executePOSTRemoteCall(RoutesAPI.CONFIGURATION_REMOTE_PATH,
-      onFetchedConfigurationData, failureHandler, Some(BikeIDMessage(bikeID)))
+    override def fetchConfiguration(): Unit = {
+      println("Chiamata di configurazione partita")
+      executePOSTRemoteCall(RoutesAPI.CONFIGURATION_REMOTE_PATH,
+        onFetchedConfigurationData, failureHandler, Some(BikeIDMessage(bikeID)))
+    }
 
     private def executePOSTRemoteCall(path:String, onSuccess:Option[String] => Unit,
                                       onFailure: Option[String] => Unit,

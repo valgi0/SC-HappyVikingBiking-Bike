@@ -33,13 +33,20 @@ object SerialMessage {
   val SEPARATOR = ":"
   val EMPTY_VALUE = ""
   val CONF_SEPARATOR = "="
+  val DEFAULT_LIGHT_CODE = "DEFAULT"
+  val DEFAULT_LIGHT_VALUE = "50"
 
   def apply(message:String): SerialMessage = {
     if(message.contains(SEPARATOR)) {
        messageFactory(parseSerializedString(message))
     }
     else {
-      SetupSerialMessage(message)
+      if(message equals DEFAULT_LIGHT_CODE) {
+        SetupSerialMessage(DEFAULT_LIGHT_VALUE)
+      } else {
+        SetupSerialMessage(message)
+      }
+
     }
   }
 
@@ -79,8 +86,8 @@ object SerialMessage {
    case class UnlockSerialMessage(override val key:String = UNLOCK_MESSAGE_KEY,
                                       override val value:String = EMPTY_VALUE) extends SerialMessage
 
-   case class SetupSerialMessage(override val key:String = SETUP_MESSAGE_KEY,
-                                      override val value:String = EMPTY_VALUE) extends SerialMessage {
+   case class SetupSerialMessage(override val value:String = EMPTY_VALUE,
+                                 override val key:String = SETUP_MESSAGE_KEY) extends SerialMessage {
      override def toSerializedMessage(): String = key + CONF_SEPARATOR + value
    }
 

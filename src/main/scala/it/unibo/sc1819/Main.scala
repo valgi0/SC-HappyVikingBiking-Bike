@@ -28,7 +28,7 @@ object Main extends App {
   var remoteport = 8080
   var rackaddress = "192.168.1.155"
   var rackport = 8080
-  var bikeID = "12"
+  var bikeID = "1"
   var serialAddress = "/dev/ttyS80"
   var serialBauldRate = 9600
 
@@ -42,14 +42,12 @@ object Main extends App {
 
 
   val vertx = Vertx.vertx
- // val workerVerticle = WorkerVerticle(serialAddress, serialBauldRate, vertx)
-  val clientVerticle = ClientVerticle(bikeID, vertx, remoteaddress, remoteport, remoteaddress, remoteport)
-  //vertx.deployVerticle(workerVerticle)
+  val workerVerticle = WorkerVerticle(serialAddress, serialBauldRate, vertx)
+  val clientVerticle = ClientVerticle(bikeID, vertx, remoteaddress, remoteport, rackaddress, rackport)
+  vertx.deployVerticle(workerVerticle)
   vertx.deployVerticle(clientVerticle)
 
-  Thread.sleep(6000)
-
-  vertx.eventBus().publish(Topic.COLLISION_TOPIC_WEB, gpsQualityMessage)
+  vertx.eventBus().publish(Topic.UNLOCK_TOPIC_WORKER, "")
 
 }
 
