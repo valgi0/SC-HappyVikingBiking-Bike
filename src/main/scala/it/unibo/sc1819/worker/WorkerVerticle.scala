@@ -81,6 +81,7 @@ object WorkerVerticle {
       */
     override def onConfigurationRetreived(configuration: String): Unit = {
       println("Configurazione ritornata " + configuration)
+      println(SerialMessage(configuration).toSerializedMessage)
       serialChannel.sendMessage(SerialMessage(configuration).toSerializedMessage)
     }
 
@@ -145,9 +146,9 @@ object WorkerVerticle {
       })
     }
 
-    private def listenForMessagesNoBody(topic:String, messageHandler:  => Unit ) = {
+    private def listenForMessagesNoBody(topic:String, messageHandler: () => Unit ) = {
       eventBus.consumer[String](topic).handler(_ => {
-        messageHandler
+        messageHandler()
       })
     }
     private def sendMessageOnChannel(topic:String, message:String = ""): Unit = {

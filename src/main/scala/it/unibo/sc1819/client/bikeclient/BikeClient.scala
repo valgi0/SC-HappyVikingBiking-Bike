@@ -99,8 +99,11 @@ object BikeClient {
     override def notifyLock(): Unit =
       executePOSTRackCall(RoutesAPI.LOCK_REMOTE_PATH, failureHandler _ )
 
-    override def fetchConfiguration(): Unit = executePOSTRemoteCall(RoutesAPI.CONFIGURATION_REMOTE_PATH,
-      onFetchedConfigurationData, failureHandler, Some(BikeIDMessage(bikeID)))
+    override def fetchConfiguration(): Unit = {
+      println("Chiamata di configurazione partita")
+      executePOSTRemoteCall(RoutesAPI.CONFIGURATION_REMOTE_PATH,
+        onFetchedConfigurationData, failureHandler, Some(BikeIDMessage(bikeID)))
+    }
 
     private def executePOSTRemoteCall(path:String, onSuccess:Option[String] => Unit,
                                       onFailure: Option[String] => Unit,
@@ -139,8 +142,8 @@ object BikeClient {
     }
 
     private def onFetchedConfigurationData(configuration:Option[String]) = {
-      val deserializedConfiguration = read[ConfigurationMessage](configuration.get).toBikeMessage()
-      eventBus.publish(Topic.SETUP_TOPIC_WORKER, deserializedConfiguration)
+      val lightValue = read[ConfigurationMessage](configuration.get).luce
+      eventBus.publish(Topic.SETUP_TOPIC_WORKER, lightValue)
     }
   }
 }
