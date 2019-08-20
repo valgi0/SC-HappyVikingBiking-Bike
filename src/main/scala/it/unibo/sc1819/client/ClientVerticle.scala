@@ -82,11 +82,23 @@ object ClientVerticle {
     this.setup()
 
 
-    override def onGPSMessageReceived(gpsMessage: String): Unit =
-      bikeClient.notifyPosition(parseGPSMessage(gpsMessage, bikeID))
+    override def onGPSMessageReceived(gpsMessage: String): Unit = {
+      val parsedGPSMessage = parseGPSMessage(gpsMessage, bikeID)
+      if(parsedGPSMessage.lon.toFloat != 0 || parsedGPSMessage.lat.toFloat != 0) {
+        bikeClient.notifyPosition(parseGPSMessage(gpsMessage, bikeID))
+      }
+    }
 
-    override def onAQMessageReceived(aqMessage: String): Unit =
-      bikeClient.notifyAirQuality(parseAQMessage(aqMessage, bikeID))
+
+    override def onAQMessageReceived(aqMessage: String): Unit = {
+      val parsedAQMessage = parseAQMessage(aqMessage, bikeID)
+      if(parsedAQMessage.air.toFloat != 0 || parsedAQMessage.lon.toFloat != 0 ||
+      parsedAQMessage.lat.toFloat != 0) {
+        println("Parte la chiamata API")
+        bikeClient.notifyAirQuality(parseAQMessage(aqMessage, bikeID))
+      }
+    }
+
 
     override def onCollisionMessageReceived(collisionMessage: String): Unit =
       bikeClient.notifyCollision(parseCollMessage(collisionMessage, bikeID))

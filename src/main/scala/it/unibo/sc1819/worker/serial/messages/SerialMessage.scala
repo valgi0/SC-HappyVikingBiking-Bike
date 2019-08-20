@@ -53,7 +53,11 @@ object SerialMessage {
 
   private def parseSerializedString (serializedMessage:String) = {
     val serialArray = serializedMessage.split(SEPARATOR)
-    (serialArray(0), serialArray(1))
+    if(serialArray.size == 1) {
+      (serialArray(0), "")
+    } else {
+      (serialArray(0), serialArray(1))
+    }
   }
 
   private def messageFactory(deserializedMessage:(String, String)) = deserializedMessage match {

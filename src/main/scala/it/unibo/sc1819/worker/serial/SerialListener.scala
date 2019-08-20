@@ -35,6 +35,7 @@ object SerialListener {
     val eventBus = context.eventBus
 
     override def onMessageReceived(message: String): Unit = {
+      println(message)
       SerialMessage(message) match {
         case GPSSerialMessage(_, value) =>  writeOnGPSChannel(value)
         case AQSerialMessage(_, value) => writeOnAPChannel(value)
