@@ -24,10 +24,10 @@ object Main extends App {
   val gpsQualityMessage = "lat=109.23, lon=134.12"
 
   val conf = new Conf(args)
-  var remoteaddress = "127.0.0.1"
-  var remoteport = 8080
-  var rackaddress = "192.168.1.155"
-  var rackport = 8080
+  var remoteaddress = "asw-happy-viking-biking.herokuapp.com"
+  var remoteport = 80
+  var rackaddress = "192.168.1.156"
+  var rackport = 8888
   var bikeID = "1"
   var serialAddress = "/dev/ttyS80"
   var serialBauldRate = 9600
@@ -46,9 +46,6 @@ object Main extends App {
   val clientVerticle = ClientVerticle(bikeID, vertx, remoteaddress, remoteport, rackaddress, rackport)
   vertx.deployVerticle(workerVerticle)
   vertx.deployVerticle(clientVerticle)
-
-  vertx.eventBus().publish(Topic.UNLOCK_TOPIC_WORKER, "")
-
 }
 
 
