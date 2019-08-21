@@ -84,7 +84,7 @@ object ClientVerticle {
     override def onGPSMessageReceived(gpsMessage: String): Unit = {
       println("GPS MESSAGE TO PARSE: " + gpsMessage)
       val parsedGPSMessage = parseGPSMessage(gpsMessage, bikeID)
-      if(parsedGPSMessage.lon.toFloat < 1 && parsedGPSMessage.lat.toFloat < 1) {
+      if(parsedGPSMessage.lon.toFloat > 1 && parsedGPSMessage.lat.toFloat > 1) {
         println("GPS MESSAGE PARSATO: " + gpsMessage)
         bikeClient.notifyPosition(parseGPSMessage(gpsMessage, bikeID))
       }
@@ -94,8 +94,8 @@ object ClientVerticle {
     override def onAQMessageReceived(aqMessage: String): Unit = {
       println("AQ MESSAGE TO PARSE: " + aqMessage)
       val parsedAQMessage = parseAQMessage(aqMessage, bikeID)
-      if(parsedAQMessage.air.toFloat != 0 && parsedAQMessage.lon.toFloat < 0 &&
-      parsedAQMessage.lat.toFloat < 0) {
+      if(parsedAQMessage.air.toFloat != 0 && parsedAQMessage.lon.toFloat > 0 &&
+      parsedAQMessage.lat.toFloat > 0) {
         println("PARSATO MESSAGGIO AQ: " + aqMessage)
         bikeClient.notifyAirQuality(parseAQMessage(aqMessage, bikeID))
       }

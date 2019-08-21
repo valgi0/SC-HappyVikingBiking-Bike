@@ -29,6 +29,7 @@ object SerialMessage {
   val COLLISION_MESSAGE_KEY = "COLL"
   val LOCK_MESSAGE_KEY  = "LOCK"
   val UNLOCK_MESSAGE_KEY = "UNLOCK"
+  val DIRTY_SIGNAL_VALUE = "DONE"
   val SETUP_MESSAGE_KEY = "LIGHT"
   val SEPARATOR = ":"
   val EMPTY_VALUE = ""
@@ -65,7 +66,7 @@ object SerialMessage {
     case (key:String, stringValue:String) if key equals  AQ_MESSAGE_KEY => AQSerialMessage(value = stringValue)
     case (key:String, stringValue:String) if key equals  COLLISION_MESSAGE_KEY => CollisionSerialMessage(value = stringValue)
     case (key:String, stringValue:String) if key equals  LOCK_MESSAGE_KEY => LockSerialMessage(value = stringValue)
-    case (key:String, stringValue:String) if key equals  UNLOCK_MESSAGE_KEY => UnlockSerialMessage(value = stringValue)
+    case (key:String, stringValue:String) if key contains   UNLOCK_MESSAGE_KEY => UnlockSerialMessage(value = stringValue)
     case _ => println(deserializedMessage); throw new MalformedMessageException()
   }
 

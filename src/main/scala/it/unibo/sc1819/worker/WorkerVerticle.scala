@@ -119,7 +119,7 @@ object WorkerVerticle {
       val fancyCollisionString = collisionString
       //TODO Parse message
       println("Collision message ricevuto: " + collisionString)
-      sendMessageOnChannel(Topic.AQ_TOPIC_WEB, fancyCollisionString)
+      sendMessageOnChannel(Topic.COLLISION_TOPIC_WEB, fancyCollisionString)
     }
 
     private def setup(): Unit = {
