@@ -83,25 +83,30 @@ object ClientVerticle {
 
 
     override def onGPSMessageReceived(gpsMessage: String): Unit = {
+      println("GPS MESSAGE TO PARSE: " + gpsMessage)
       val parsedGPSMessage = parseGPSMessage(gpsMessage, bikeID)
-      if(parsedGPSMessage.lon.toFloat != 0 || parsedGPSMessage.lat.toFloat != 0) {
+      if(parsedGPSMessage.lon.toFloat < 1 || parsedGPSMessage.lat.toFloat < 1) {
         bikeClient.notifyPosition(parseGPSMessage(gpsMessage, bikeID))
       }
     }
 
 
     override def onAQMessageReceived(aqMessage: String): Unit = {
+      println("AQ MESSAGE TO PARSE: " + aqMessage)
       val parsedAQMessage = parseAQMessage(aqMessage, bikeID)
-      if(parsedAQMessage.air.toFloat != 0 || parsedAQMessage.lon.toFloat != 0 ||
-      parsedAQMessage.lat.toFloat != 0) {
+      if(parsedAQMessage.air.toFloat != 0 || parsedAQMessage.lon.toFloat < 0 ||
+      parsedAQMessage.lat.toFloat < 0) {
         println("Parte la chiamata API")
         bikeClient.notifyAirQuality(parseAQMessage(aqMessage, bikeID))
       }
     }
 
 
-    override def onCollisionMessageReceived(collisionMessage: String): Unit =
+    override def onCollisionMessageReceived(collisionMessage: String): Unit = {
+      println("COLLISION MESSAGE TO PARSE: " + collisionMessage)
       bikeClient.notifyCollision(parseCollMessage(collisionMessage, bikeID))
+    }
+
 
     override def onUnLockMessageReceived(): Unit = bikeClient.fetchConfiguration()
 
