@@ -7,9 +7,8 @@ import io.vertx.scala.core.Vertx
 import it.unibo.sc1819.client.ClientVerticle.VALUE_SEPARATOR
 import it.unibo.sc1819.client.bikeclient.BikeClient
 import it.unibo.sc1819.client.web.RequestMessage.{AQMessage, CollisionMessage, GPSMessage, LogMessage}
-import it.unibo.sc1819.client.web.WebClient
 import it.unibo.sc1819.util.messages.Topic
-import it.unibo.sc1819.client.web
+
 
 trait ClientVerticle extends ScalaVerticle{
 
@@ -85,7 +84,8 @@ object ClientVerticle {
     override def onGPSMessageReceived(gpsMessage: String): Unit = {
       println("GPS MESSAGE TO PARSE: " + gpsMessage)
       val parsedGPSMessage = parseGPSMessage(gpsMessage, bikeID)
-      if(parsedGPSMessage.lon.toFloat < 1 || parsedGPSMessage.lat.toFloat < 1) {
+      if(parsedGPSMessage.lon.toFloat < 1 && parsedGPSMessage.lat.toFloat < 1) {
+        println("GPS MESSAGE PARSATO: " + gpsMessage)
         bikeClient.notifyPosition(parseGPSMessage(gpsMessage, bikeID))
       }
     }
@@ -94,9 +94,9 @@ object ClientVerticle {
     override def onAQMessageReceived(aqMessage: String): Unit = {
       println("AQ MESSAGE TO PARSE: " + aqMessage)
       val parsedAQMessage = parseAQMessage(aqMessage, bikeID)
-      if(parsedAQMessage.air.toFloat != 0 || parsedAQMessage.lon.toFloat < 0 ||
+      if(parsedAQMessage.air.toFloat != 0 && parsedAQMessage.lon.toFloat < 0 &&
       parsedAQMessage.lat.toFloat < 0) {
-        println("Parte la chiamata API")
+        println("PARSATO MESSAGGIO AQ: " + aqMessage)
         bikeClient.notifyAirQuality(parseAQMessage(aqMessage, bikeID))
       }
     }
