@@ -62,7 +62,6 @@ object SerialChannel {
     override def serialEvent(serialPortEvent: SerialPortEvent): Unit = {
       if (serialPortEvent.getEventType == SerialPortEvent.DATA_AVAILABLE) try {
         val readInput = input.readLine
-        println(readInput)
         listener.onMessageReceived(readInput)
       } catch {
         case e: Exception => {
