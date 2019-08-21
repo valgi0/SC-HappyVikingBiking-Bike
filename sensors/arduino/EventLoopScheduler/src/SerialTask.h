@@ -35,7 +35,7 @@ private:
   //check the result section looking for changes
   int updateAndCheckState(int *new_state){
     for(int i = RESULT_SECTION; i < STATE_SIZE; i++){
-      if(new_state[i] != old_state[i]){
+      //if(new_state[i] != old_state[i]){
         //if find one it prepares a message KEY:VALUE
 
         switch (i) {
@@ -53,21 +53,24 @@ private:
             Serial.print(*((float*)new_state[RESULT_GPS_LAT]), 7);
             Serial.print(GPS_LON);
             Serial.print(*((float*)new_state[RESULT_GPS_LONG]), 7);
-            Serial.print("pol=");
+            Serial.print(",pol=");
             Serial.println(new_state[i]);
             break;
-          case RESULT_ACC: Serial.print(key_collision);
-            Serial.print(GPS_LAT);
-            Serial.print(*((float*)new_state[RESULT_GPS_LAT]), 7);
-            Serial.print(GPS_LON);
-            Serial.print(*((float*)new_state[RESULT_GPS_LONG]), 7);
+          case RESULT_ACC:
+            if(new_state[i]){
+              Serial.print(key_collision);
+              Serial.print(GPS_LAT);
+              Serial.print(*((float*)new_state[RESULT_GPS_LAT]), 7);
+              Serial.print(GPS_LON);
+              Serial.println(*((float*)new_state[RESULT_GPS_LONG]), 7);
+            }
             old_state[i] = FALSE;
             new_state[i] = FALSE;
         }
 
         //update the old state to the new one
         old_state[i] = new_state[i];
-      }
+      //}
     }
   };
 

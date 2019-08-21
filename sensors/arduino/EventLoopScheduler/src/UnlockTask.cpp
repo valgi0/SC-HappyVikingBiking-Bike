@@ -4,7 +4,7 @@
 
 int * p_state;
 
-void handleInterrupt();
+void handleUnlookingBikeInterrupt();
 void handleLock();
 
 void UnlockTask::start(int *state){
@@ -12,26 +12,29 @@ void UnlockTask::start(int *state){
   this -> _state = state;
   p_state = state;
   attachInterrupt(digitalPinToInterrupt(state[PIN_BUTTON]),
-  handleInterrupt, RISING);
+  handleUnlookingBikeInterrupt, RISING);
 }
 
-void handleInterrupt(){
-  detachInterrupt(digitalPinToInterrupt(p_state[PIN_BUTTON]));
+void handleUnlookingBikeInterrupt(){
   noInterrupts();
+  detachInterrupt(digitalPinToInterrupt(p_state[PIN_BUTTON]));
   attachInterrupt(digitalPinToInterrupt(p_state[PIN_BUTTON]),
    handleLock, RISING);
   //Serial.println("Interupt called");
   //Serial.flush();
   //UnlockTask::instance() -> waitForRaspBerry();
   p_state[STATE] = UNLOOKING;
+  delay(300);
   interrupts();
 }
 
 void handleLock(){
   noInterrupts();
+  Serial.print("Look bike interupt");
   detachInterrupt(digitalPinToInterrupt(p_state[PIN_BUTTON]));
   p_state[STATE] = SLEEPING;
   attachInterrupt(digitalPinToInterrupt(p_state[PIN_BUTTON]),
-  handleInterrupt, RISING);
+  handleUnlookingBikeInterrupt, RISING);
+  delay(300);
   interrupts();
 }

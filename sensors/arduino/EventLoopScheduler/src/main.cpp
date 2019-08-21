@@ -16,10 +16,10 @@ const int def_period = 100;
 const int def_sensot_period = 1500;
 const int def_threshold = 100;
 const int def_light_sensor_pin = A0;
-const int def_serial_period = 300;
+const int def_serial_period = 5000;
 const int def_button_pin = 2;
 const int def_pollution_sensor_pin = A1;
-const int def_pollution_sensor_period = 3000;
+const int def_pollution_sensor_period = 2500;
 const int def_gps_period = 500;
 const int def_acc_period = 100;
 const int def_acc_x_pin = A2;
@@ -56,6 +56,7 @@ void setup() {
   internalState[POLLUTION_SENSOR_PERIOD] = def_pollution_sensor_period;
   internalState[RESULT_GPS_LAT] = (int)&lat;
   internalState[RESULT_GPS_LONG] = (int)&lon;
+  internalState[RESULT_ACC] = 0;
   internalState[GPS_PERIOD] = def_gps_period;
   internalState[PIN_ACC_X] = def_acc_x_pin;
   internalState[PIN_ACC_Y] = def_acc_y_pin;
@@ -121,9 +122,10 @@ void loop() {
     case RUNNING: scheduler.schedule();
       break;
     case SLEEPING: delay(200);
-    //Serial.println("I'm in sleeping mode");
+      Serial.println("I'm in sleeping mode");
       break;
-    case UNLOOKING: UnlockTask::instance()->waitForRaspBerry();
+    case UNLOOKING:
+      UnlockTask::instance()->waitForRaspBerry();
       break;
   }
 }
