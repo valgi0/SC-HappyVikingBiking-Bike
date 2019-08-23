@@ -110,7 +110,10 @@ object ClientVerticle {
 
     override def onUnLockMessageReceived(): Unit = bikeClient.fetchConfiguration()
 
-    override def onLockMessageReceived(): Unit = bikeClient.notifyLock()
+    override def onLockMessageReceived(): Unit = {
+      println("Messaggio arrivato a client verticle, notificando...")
+      bikeClient.notifyLock()
+    }
 
 
     private def setup():Unit = {

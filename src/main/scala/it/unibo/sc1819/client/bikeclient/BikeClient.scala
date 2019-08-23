@@ -4,7 +4,7 @@ import java.util.Date
 
 import io.vertx.core.http.HttpMethod
 import io.vertx.scala.core.Vertx
-import it.unibo.sc1819.client.web.RequestMessage.{BikeIDMessage, ConfigurationMessage, LogMessage, JsonRequest}
+import it.unibo.sc1819.client.web.RequestMessage.{BikeIDMessage, ConfigurationMessage, JsonRequest, LockMessage, LogMessage}
 import it.unibo.sc1819.client.web.WebClient
 import it.unibo.sc1819.client.web._
 import it.unibo.sc1819.util.messages.Topic
@@ -97,7 +97,7 @@ object BikeClient {
       executePOSTRemoteCall(RoutesAPI.COLLISION_REMOTE_PATH, failureHandler _ , Some(collisionData))
 
     override def notifyLock(): Unit =
-      executePOSTRackCall(RoutesAPI.LOCK_REMOTE_PATH, failureHandler _ )
+      executePOSTRackCall(RoutesAPI.LOCK_REMOTE_PATH, failureHandler _, Some(LockMessage(bikeID)))
 
     override def fetchConfiguration(): Unit = {
       println("Chiamata di configurazione partita")
@@ -128,10 +128,10 @@ object BikeClient {
 
     private def executePOSTRackCall(path:String,
                                     onFailure: Option[String] => Unit,
-                                    payLoad:Option[JsonRequest] = None):Unit = {
+                                    payLoad:Option[JsonRequest] = None):Unit =
       webClient.executeAPICall(rackServer, HttpMethod.POST, path ,rackPort,
         handlerToOnlyFailureConversion(onFailure), payLoad )
-    }
+
 
     //TODO STOP AFTER A WHILE
     private def failureHandler(errorMessage:Option[String]):Unit = errorMessage match {

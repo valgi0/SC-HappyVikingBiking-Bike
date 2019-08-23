@@ -2,6 +2,7 @@ package it.unibo.sc1819
 
 import io.vertx.scala.core.Vertx
 import it.unibo.sc1819.client.ClientVerticle
+import it.unibo.sc1819.client.bikeclient.BikeClient
 import it.unibo.sc1819.util.messages.Topic
 import it.unibo.sc1819.worker.WorkerVerticle
 import it.unibo.sc1819.worker.serial.messages.SerialMessage
