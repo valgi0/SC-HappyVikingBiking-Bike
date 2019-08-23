@@ -22,6 +22,7 @@
 #define PIN_LED_LIGHT 8
 #define PIN_SENSOR_LIGHT 9
 #define PIN_BUTTON 10
+#define PIN_BUTTON2 7
 #define PIN_POLLUTION_SENSOR 11
 #define PIN_ACC_X 12
 #define PIN_ACC_Y 13

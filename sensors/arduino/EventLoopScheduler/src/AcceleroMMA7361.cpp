@@ -1,6 +1,6 @@
-// acceleroMMA7361.h - Library for retrieving data from the MMA7361 accelerometer. 
+// acceleroMMA7361.h - Library for retrieving data from the MMA7361 accelerometer.
 // Copyright 2011-2012 Jef Neefs (neefs@gmail.com) and Jeroen Doggen (jeroendoggen@gmail.com)
-// For more information: variable declaration, changelog,... see AcceleroMMA7361.h 
+// For more information: variable declaration, changelog,... see AcceleroMMA7361.h
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -295,7 +295,7 @@ void AcceleroMMA7361::calibrate()
   }
   else
   {
-    Serial.print("\nDONE");
+    Serial.println("\nDONE");
   }
 }
 
