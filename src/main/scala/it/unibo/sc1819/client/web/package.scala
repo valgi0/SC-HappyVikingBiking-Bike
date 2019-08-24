@@ -21,6 +21,8 @@ package object web {
       if(ar.result().statusCode() == OK_CODE) {
         onSuccess(ar.result().bodyAsString())
       } else {
+        println(ar.result().statusCode())
+        println(ar.result().bodyAsString())
         onFailure(ar.result().bodyAsString())
       }
     } else {
@@ -33,10 +35,17 @@ package object web {
     if(ar.succeeded()) {
       if(ar.result().statusCode() != OK_CODE) {
         onFailure(ar.result().bodyAsString())
+        println(ar.result().statusCode())
+        println(ar.result().bodyAsString())
       }
     } else {
       onFailure(Some(ar.cause().getMessage))
     }
   }
+
+  val infoMessageCode = "INFO"
+  val warningMessageCode = "WARNING"
+  val errorMessageCode = "ERROR"
+  val crashMessageCode = "CRASH"
 
 }

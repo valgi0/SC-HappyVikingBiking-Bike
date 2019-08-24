@@ -1,7 +1,8 @@
 #include "Scheduler.h"
 
-void Scheduler::init(int basePeriod){
+void Scheduler::init(int basePeriod, int * state){
   this->basePeriod = basePeriod;
+  this -> state = state;
   timer.setupPeriod(basePeriod);
   nTasks = 0;
 }
@@ -20,7 +21,7 @@ void Scheduler::schedule(){
   timer.waitForNextTick();
   for (int i = 0; i < nTasks; i++){
     if (taskList[i]->updateAndCheckTime(basePeriod)){
-      taskList[i]->tick();
+      taskList[i]->tick(this -> state);
     }
   }
 }

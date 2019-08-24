@@ -4,7 +4,7 @@ import java.util.Date
 
 import io.vertx.core.http.HttpMethod
 import io.vertx.scala.core.Vertx
-import it.unibo.sc1819.client.web.RequestMessage.{BikeIDMessage, ConfigurationMessage, ErrorLogMessage, JsonRequest}
+import it.unibo.sc1819.client.web.RequestMessage.{BikeIDMessage, ConfigurationMessage, JsonRequest, LockMessage, LogMessage}
 import it.unibo.sc1819.client.web.WebClient
 import it.unibo.sc1819.client.web._
 import it.unibo.sc1819.util.messages.Topic
@@ -97,10 +97,13 @@ object BikeClient {
       executePOSTRemoteCall(RoutesAPI.COLLISION_REMOTE_PATH, failureHandler _ , Some(collisionData))
 
     override def notifyLock(): Unit =
-      executePOSTRackCall(RoutesAPI.LOCK_REMOTE_PATH, failureHandler _ )
+      executePOSTRackCall(RoutesAPI.LOCK_REMOTE_PATH, failureHandler _, Some(LockMessage(bikeID)))
 
-    override def fetchConfiguration(): Unit = executePOSTRemoteCall(RoutesAPI.CONFIGURATION_REMOTE_PATH,
-      onFetchedConfigurationData, failureHandler, Some(BikeIDMessage(bikeID)))
+    override def fetchConfiguration(): Unit = {
+      println("Chiamata di configurazione partita")
+      executePOSTRemoteCall(RoutesAPI.CONFIGURATION_REMOTE_PATH,
+        onFetchedConfigurationData, failureHandler, Some(BikeIDMessage(bikeID)))
+    }
 
     private def executePOSTRemoteCall(path:String, onSuccess:Option[String] => Unit,
                                       onFailure: Option[String] => Unit,
@@ -125,21 +128,22 @@ object BikeClient {
 
     private def executePOSTRackCall(path:String,
                                     onFailure: Option[String] => Unit,
-                                    payLoad:Option[JsonRequest] = None):Unit = {
+                                    payLoad:Option[JsonRequest] = None):Unit =
       webClient.executeAPICall(rackServer, HttpMethod.POST, path ,rackPort,
         handlerToOnlyFailureConversion(onFailure), payLoad )
-    }
 
+
+    //TODO STOP AFTER A WHILE
     private def failureHandler(errorMessage:Option[String]):Unit = errorMessage match {
-      case Some(msg) => executePOSTRemoteCall(RoutesAPI.ERROR_NOTIFICATION_PATH,
-        failureHandler _, Some(ErrorLogMessage(bikeID, new Date().toString + ":" + msg )))
-      case _ => executePOSTRemoteCall(RoutesAPI.ERROR_NOTIFICATION_PATH,
-        failureHandler _ , Some(ErrorLogMessage(bikeID, new Date().toString + ":" + "ERROR CAUSE NOT SPECIFIED" )))
+      case Some(msg) => executePOSTRemoteCall(RoutesAPI.LOG_NOTIFICATION_PATH,
+        failureHandler _, Some(LogMessage(bikeID, warningMessageCode,new Date().toString + ":" + msg )))
+      case _ => executePOSTRemoteCall(RoutesAPI.LOG_NOTIFICATION_PATH,
+        failureHandler _ , Some(LogMessage(bikeID, warningMessageCode ,new Date().toString + ":" + "ERROR CAUSE NOT SPECIFIED" )))
     }
 
     private def onFetchedConfigurationData(configuration:Option[String]) = {
-      val deserializedConfiguration = read[ConfigurationMessage](configuration.get).toBikeMessage()
-      eventBus.publish(Topic.SETUP_TOPIC_WORKER, deserializedConfiguration)
+      val lightValue = read[ConfigurationMessage](configuration.get).luce
+      eventBus.publish(Topic.SETUP_TOPIC_WORKER, lightValue)
     }
   }
 }

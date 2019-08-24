@@ -60,13 +60,15 @@ object SerialChannel {
 
 
     override def serialEvent(serialPortEvent: SerialPortEvent): Unit = {
-      println("Evento arrivato")
       if (serialPortEvent.getEventType == SerialPortEvent.DATA_AVAILABLE) try {
-        println("Data available")
-        listener.onMessageReceived(input.readLine)
+        val readInput = input.readLine
+        listener.onMessageReceived(readInput)
       } catch {
-        case e: Exception =>
-          System.err.println(e.toString)
+        case e: Exception => {
+          System.err.println(e.getStackTrace)
+          e.printStackTrace()
+        }
+
       }
       if(serialPortEvent.getEventType == SerialPortEvent.OUTPUT_BUFFER_EMPTY) {
         if(tempMessage != "") {

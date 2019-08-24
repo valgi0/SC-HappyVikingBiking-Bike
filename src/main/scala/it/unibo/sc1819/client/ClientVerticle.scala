@@ -1,12 +1,14 @@
 package it.unibo.sc1819.client
 
+import java.util.Date
+
 import io.vertx.lang.scala.ScalaVerticle
 import io.vertx.scala.core.Vertx
 import it.unibo.sc1819.client.ClientVerticle.VALUE_SEPARATOR
 import it.unibo.sc1819.client.bikeclient.BikeClient
-import it.unibo.sc1819.client.web.RequestMessage.{AQMessage, CollisionMessage, GPSMessage}
-import it.unibo.sc1819.client.web.WebClient
+import it.unibo.sc1819.client.web.RequestMessage.{AQMessage, CollisionMessage, GPSMessage, LogMessage}
 import it.unibo.sc1819.util.messages.Topic
+
 
 trait ClientVerticle extends ScalaVerticle{
 
@@ -55,17 +57,18 @@ object ClientVerticle {
 
   private def parseGPSMessage(msg:String, bikeID:String):GPSMessage = {
    val values = msg.replace(" ","").split(VALUE_SEPARATOR).toStream.map(keyval => keyval.split("=")(1)).toList
-    GPSMessage(values.head, values(1), bikeID)
+    GPSMessage(values.head, values(1), bikeID, new Date().getTime)
   }
 
   private def parseAQMessage(msg:String, bikeID:String):AQMessage = {
     val values = msg.replace(" ","").split(VALUE_SEPARATOR).toStream.map(keyval => keyval.split("=")(1)).toList
-    AQMessage(values(2), values.head, values(1), bikeID)
+    AQMessage(values(2), values.head, values(1), bikeID, new Date().getTime)
   }
 
-  private def parseCollMessage(msg:String, bikeID:String): CollisionMessage = {
+  private def parseCollMessage(msg:String, bikeID:String): LogMessage = {
     val tempMessage = parseGPSMessage(msg, bikeID)
-    CollisionMessage(tempMessage.latitude, tempMessage.longitude, tempMessage.bikeID)
+    LogMessage(tempMessage.bikeId, web.crashMessageCode,
+      "Crash registered at " + tempMessage.lat + ", " + tempMessage.lon)
   }
 
   private class ClientVerticleImpl(override val bikeID:String, val vertxContext:Vertx,
@@ -78,18 +81,39 @@ object ClientVerticle {
     this.setup()
 
 
-    override def onGPSMessageReceived(gpsMessage: String): Unit =
-      bikeClient.notifyPosition(parseGPSMessage(gpsMessage, bikeID))
+    override def onGPSMessageReceived(gpsMessage: String): Unit = {
+      println("GPS MESSAGE TO PARSE: " + gpsMessage)
+      val parsedGPSMessage = parseGPSMessage(gpsMessage, bikeID)
+      if(parsedGPSMessage.lon.toFloat > 1 && parsedGPSMessage.lat.toFloat > 1) {
+        println("GPS MESSAGE PARSATO: " + gpsMessage)
+        bikeClient.notifyPosition(parseGPSMessage(gpsMessage, bikeID))
+      }
+    }
 
-    override def onAQMessageReceived(aqMessage: String): Unit =
-      bikeClient.notifyAirQuality(parseAQMessage(aqMessage, bikeID))
 
-    override def onCollisionMessageReceived(collisionMessage: String): Unit =
+    override def onAQMessageReceived(aqMessage: String): Unit = {
+      println("AQ MESSAGE TO PARSE: " + aqMessage)
+      val parsedAQMessage = parseAQMessage(aqMessage, bikeID)
+      if(parsedAQMessage.air.toFloat != 0 && parsedAQMessage.lon.toFloat > 0 &&
+      parsedAQMessage.lat.toFloat > 0) {
+        println("PARSATO MESSAGGIO AQ: " + aqMessage)
+        bikeClient.notifyAirQuality(parseAQMessage(aqMessage, bikeID))
+      }
+    }
+
+
+    override def onCollisionMessageReceived(collisionMessage: String): Unit = {
+      println("COLLISION MESSAGE TO PARSE: " + collisionMessage)
       bikeClient.notifyCollision(parseCollMessage(collisionMessage, bikeID))
+    }
+
 
     override def onUnLockMessageReceived(): Unit = bikeClient.fetchConfiguration()
 
-    override def onLockMessageReceived(): Unit = bikeClient.notifyLock()
+    override def onLockMessageReceived(): Unit = {
+      println("Messaggio arrivato a client verticle, notificando...")
+      bikeClient.notifyLock()
+    }
 
 
     private def setup():Unit = {

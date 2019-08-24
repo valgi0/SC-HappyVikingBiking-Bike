@@ -24,7 +24,7 @@ class Task {
       /*******
       Method to execute the task
       ********/
-        virtual void tick() = 0;
+        virtual void tick(int * state) = 0;
 
       /*******
       Method usefull to check if it's time to tick()

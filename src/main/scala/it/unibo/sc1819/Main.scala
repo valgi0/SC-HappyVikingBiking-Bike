@@ -2,7 +2,10 @@ package it.unibo.sc1819
 
 import io.vertx.scala.core.Vertx
 import it.unibo.sc1819.client.ClientVerticle
+import it.unibo.sc1819.client.bikeclient.BikeClient
+import it.unibo.sc1819.util.messages.Topic
 import it.unibo.sc1819.worker.WorkerVerticle
+import it.unibo.sc1819.worker.serial.messages.SerialMessage
 import org.rogach.scallop.{ScallopConf, ScallopOption}
 
 class Conf(arguments: Seq[String]) extends ScallopConf(arguments) {
@@ -18,12 +21,15 @@ class Conf(arguments: Seq[String]) extends ScallopConf(arguments) {
 
 object Main extends App {
 
+  val MockConfigurationMessage = "LIGHT=75END"
+  val gpsQualityMessage = "lat=109.23, lon=134.12"
+
   val conf = new Conf(args)
-  var remoteaddress = "192.168.1.155"
-  var remoteport = 8080
-  var rackaddress = "192.168.1.155"
+  var remoteaddress = "asw-happy-viking-biking.herokuapp.com"
+  var remoteport = 80
+  var rackaddress = "192.168.1.156"
   var rackport = 8888
-  var bikeID = "bk-000000"
+  var bikeID = "1"
   var serialAddress = "/dev/ttyS80"
   var serialBauldRate = 9600
 
@@ -38,8 +44,10 @@ object Main extends App {
 
   val vertx = Vertx.vertx
   val workerVerticle = WorkerVerticle(serialAddress, serialBauldRate, vertx)
-  val clientVerticle = ClientVerticle(bikeID, vertx, remoteaddress, remoteport, remoteaddress, remoteport)
+  val clientVerticle = ClientVerticle(bikeID, vertx, remoteaddress, remoteport, rackaddress, rackport)
   vertx.deployVerticle(workerVerticle)
   vertx.deployVerticle(clientVerticle)
-
 }
+
+
+

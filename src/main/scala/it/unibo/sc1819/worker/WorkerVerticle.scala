@@ -81,6 +81,7 @@ object WorkerVerticle {
       */
     override def onConfigurationRetreived(configuration: String): Unit = {
       println("Configurazione ritornata " + configuration)
+      println(SerialMessage(configuration).toSerializedMessage)
       serialChannel.sendMessage(SerialMessage(configuration).toSerializedMessage)
     }
 
@@ -118,13 +119,13 @@ object WorkerVerticle {
       val fancyCollisionString = collisionString
       //TODO Parse message
       println("Collision message ricevuto: " + collisionString)
-      sendMessageOnChannel(Topic.AQ_TOPIC_WEB, fancyCollisionString)
+      sendMessageOnChannel(Topic.COLLISION_TOPIC_WEB, fancyCollisionString)
     }
 
     private def setup(): Unit = {
       listenForMessages(Topic.GPS_TOPIC_WORKER, onGPSMessage)
-        .completionHandler(_ => listenForMessagesNoBody(Topic.LOCK_TOPIC_WORKER, onBikeLock)
-          .completionHandler(_ =>   listenForMessagesNoBody(Topic.UNLOCK_TOPIC_WORKER, onBikeUnlock)
+        .completionHandler(_ => listenForMessagesNoBody(Topic.LOCK_TOPIC_WORKER, () => onBikeLock())
+          .completionHandler(_ =>   listenForMessagesNoBody(Topic.UNLOCK_TOPIC_WORKER, () => onBikeUnlock())
             .completionHandler(_ => {
               listenForMessages(Topic.AQ_TOPIC_WORKER, onAQMessage)
               listenForMessages(Topic.COLLISION_TOPIC_WORKER, onCollisionMessage)
@@ -145,9 +146,9 @@ object WorkerVerticle {
       })
     }
 
-    private def listenForMessagesNoBody(topic:String, messageHandler:  => Unit ) = {
+    private def listenForMessagesNoBody(topic:String, messageHandler: () => Unit ) = {
       eventBus.consumer[String](topic).handler(_ => {
-        messageHandler
+        messageHandler()
       })
     }
     private def sendMessageOnChannel(topic:String, message:String = ""): Unit = {

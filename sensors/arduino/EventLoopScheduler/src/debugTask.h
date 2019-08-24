@@ -20,9 +20,12 @@ class debugTask: public Task{
       Task::init(period);
     };
 
-    void tick(){
+    void tick(int *state){
       Serial.write(debugString);
       Serial.write("\n\n");
+      for(int i = 0; i < 20; i++){
+        //Serial.print("[");Serial.print(i);Serial.print("]");Serial.print(" -> "); Serial.println(state[i]);
+      }
     }
 };
 
